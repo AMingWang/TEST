@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSPD 雲端行動數據終端機 (MDT)</title>
+    <style>
+        /* 模擬真實警用終端機的視覺風格 */
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #0a0a0a;
+            color: #00ff00;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 2px solid #333;
+            padding: 20px;
+            background-color: #111;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.1);
+        }
+        h2 {
+            border-bottom: 1px solid #00ff00;
+            padding-bottom: 10px;
+            text-shadow: 0 0 5px #00ff00;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border: 1px dashed #444;
+            background-color: #000;
+        }
+        input, select, button {
+            background-color: #000;
+            color: #00ff00;
+            border: 1px solid #00ff00;
+            padding: 8px;
+            margin: 5px 0;
+            font-family: inherit;
+        }
+        button {
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        button:hover {
+            background-color: #00ff00;
+            color: #000;
+        }
+        .result-box {
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid #00ff00;
+            display: none;
+        }
+        .warning {
+            color: #ff3333;
+            border-color: #ff3333;
+            text-shadow: 0 0 5px #ff3333;
+        }
+        .status-text {
+            color: #ffaa00;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>[雲端連線] LSPD 行動數據終端機 (v2.0 跨區連線版)</h2>
+
+    <div class="section">
+        <h3>/// 戶政連線：市民身分建檔 ///</h3>
+        <label>姓名：</label>
+        <input type="text" id="regName" placeholder="輸入真實姓名"><br>
+        <label>生日：</label>
+        <input type="date" id="regDob"><br>
+        <label>性別：</label>
+        <select id="regGender">
+            <option value="男">男</option>
+            <option value="女">女</option>
+        </select><br>
+        <button id="registerBtn">[ 提交加密身分建檔 ]</button>
+        <p id="regMessage" class="status-text"></p>
+    </div>
+
+    <div class="section">
+        <h3>/// 警用連線：NCIC 國家犯罪資訊中心 ///</h3>
+        <label>查詢目標 (姓名或身分證字號)：</label>
+        <input type="text" id="searchQuery" placeholder="例如: CIT-1234 或 姓名">
+        <button id="searchBtn">[ 啟動雲端資料庫搜尋 ]</button>
+        
+        <p id="loadingMsg" class="status-text" style="display: none;">正在透過加密通道連線至雲端資料庫...</p>
+
+        <div id="resultBox" class="result-box">
+            <h4 style="margin-top: 0; text-decoration: underline;">市民檔案紀錄</h4>
+            <p><strong>身分證字號：</strong> <span id="resId"></span></p>
+            <p><strong>姓名：</strong> <span id="resName"></span></p>
+            <p><strong>出生年月日：</strong> <span id="resDob"></span></p>
+            <p><strong>性別：</strong> <span id="resGender"></span></p>
+            <p><strong>前科紀錄：</strong> 無前科 (清白)</p>
+            <p><strong>通緝狀態：</strong> 無</p>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // 專案專屬雲端金鑰已自動帶入
+    const firebaseConfig = {
+        apiKey: "AIzaSyD4po8muOv3Wzm8NSJxph5UXdmR4zdZZa4",
+        authDomain: "lspd-mdt-system.firebaseapp.com",
+        projectId: "lspd-mdt-system",
+        storageBucket: "lspd-mdt-system.firebasestorage.app",
+        messagingSenderId: "468749906657",
+        appId: "1:468749906657:web:5ad7ae50e50cec3792bda0",
+        measurementId: "G-PH2LHCLY79"
+    };
+
+    // 初始化 Firebase 與連線到 Firestore 資料庫
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // ==========================================
+    // 功能一：市民註冊 (寫入雲端)
+    // ==========================================
+    document.getElementById("registerBtn").addEventListener("click", async () => {
+        const name = document.getElementById("regName").value;
+        const dob = document.getElementById("regDob").value;
+        const gender = document.getElementById("regGender").value;
+        const msgBox = document.getElementById("regMessage");
+
+        if (!name || !dob) {
+            alert("錯誤：姓名與生日不可為空！");
+            return;
+        }
+
+        msgBox.innerText = "資料加密中，正在上傳至雲端伺服器...";
+        
+        // 產生真實感身分證字號
+        const citizenId = "CIT-" + Math.floor(1000 + Math.random() * 9000);
+
+        try {
+            // 將資料寫入雲端資料庫的 "citizens" 集合中
+            await addDoc(collection(db, "citizens"), {
+                citizenId: citizenId,
+                name: name,
+                dob: dob,
+                gender: gender,
+                timestamp: new Date()
+            });
+
+            msgBox.innerText = `[建檔成功] 檔案已同步至雲端。核發身分證字號：${citizenId}`;
+            document.getElementById("regName").value = "";
+            document.getElementById("regDob").value = "";
+        } catch (e) {
+            console.error("寫入錯誤: ", e);
+            msgBox.innerText = "⚠️ 寫入雲端失敗，請確認 Firestore 安全規則是否已開啟為測試模式。";
+            msgBox.style.color = "#ff3333";
+        }
+    });
+
+    // ==========================================
+    // 功能二：警察查詢 (從雲端撈取)
+    // ==========================================
+    document.getElementById("searchBtn").addEventListener("click", async () => {
+        const searchVal = document.getElementById("searchQuery").value.trim();
+        const resultBox = document.getElementById("resultBox");
+        const loadingMsg = document.getElementById("loadingMsg");
+
+        if (!searchVal) return;
+
+        // 介面切換：顯示搜尋中
+        resultBox.style.display = "none";
+        resultBox.classList.remove("warning");
+        loadingMsg.style.display = "block";
+
+        try {
+            const citizensRef = collection(db, "citizens");
+            // 設定搜尋條件：可選身分證字號或姓名精準搜尋
+            const q = query(citizensRef, where("citizenId", "==", searchVal));
+            const qName = query(citizensRef, where("name", "==", searchVal));
+
+            // 同時執行兩種搜尋條件
+            const [idSnapshot, nameSnapshot] = await Promise.all([getDocs(q), getDocs(qName)]);
+            
+            let foundData = null;
+            
+            if (!idSnapshot.empty) {
+                foundData = idSnapshot.docs[0].data();
+            } else if (!nameSnapshot.empty) {
+                foundData = nameSnapshot.docs[0].data();
+            }
+
+            // 模擬電信延遲感，提供更好的使用者體驗
+            setTimeout(() => {
+                loadingMsg.style.display = "none";
+
+                if (foundData) {
+                    // 將撈出來的雲端資料渲染到畫面上
+                    document.getElementById("resId").innerText = foundData.citizenId;
+                    document.getElementById("resName").innerText = foundData.name;
+                    document.getElementById("resDob").innerText = foundData.dob;
+                    document.getElementById("resGender").innerText = foundData.gender;
+                    resultBox.style.display = "block";
+                } else {
+                    // 查無此人
+                    document.getElementById("resId").innerText = "UNKNOWN";
+                    document.getElementById("resName").innerText = "UNKNOWN";
+                    document.getElementById("resDob").innerText = "UNKNOWN";
+                    document.getElementById("resGender").innerText = "UNKNOWN";
+                    
+                    resultBox.classList.add("warning");
+                    resultBox.innerHTML = "<h4 style='margin:0;'>⚠️ 系統警告：查無此市民建檔資料！</h4><p>無法從中央資料庫獲取相符紀錄，請核對證件真偽或扣留進行指紋比對。</p>";
+                    resultBox.style.display = "block";
+                }
+            }, 800);
+
+        } catch (e) {
+            console.error("讀取錯誤: ", e);
+            loadingMsg.innerText = "⚠️ 無法連線至雲端伺服器，請確認 Firestore 狀態。";
+            loadingMsg.style.color = "#ff3333";
+        }
+    });
+</script>
+
+</body>
+</html>
