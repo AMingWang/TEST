@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SA-CAD | 完美實境版</title>
+    <title>SA-CAD | 終極上帝版 v12</title>
     <style>
         :root {
             --bg-dark: #09090b; --bg-panel: #18181b; --bg-card: #27272a; --bg-input: #1f1f22;
@@ -29,16 +29,16 @@
 
         /* 模態框 (Modal) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-        .modal-box { background: var(--bg-panel); padding: 25px; border-radius: 12px; border: 1px solid var(--border); width: 450px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .modal-box { background: var(--bg-panel); padding: 25px; border-radius: 12px; border: 1px solid var(--border); width: 450px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
         .modal-box-large { width: 80%; height: 85vh; display: flex; flex-direction: column; }
         
-        /* 登入與部門選擇閘道 */
+        /* 登入閘道 */
         #auth-screen, #dept-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #09090b; z-index: 9000; display: flex; justify-content: center; align-items: center; flex-direction: column; }
         .dept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 600px; margin-top: 20px; }
         .dept-btn { padding: 25px; font-size: 1.1rem; border-radius: 8px; border: 2px solid var(--border); background: var(--bg-card); transition: 0.3s; }
         .dept-btn:hover { transform: translateY(-3px); border-color: white; }
 
-        /* 主系統架構 */
+        /* 系統架構 */
         #app { display: none; width: 100%; height: 100%; }
         .sidebar { width: 260px; background: var(--bg-panel); display: flex; flex-direction: column; border-right: 1px solid var(--border); z-index: 100;}
         .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); background: #000;}
@@ -48,7 +48,6 @@
         .dept-view { display: none; } .dept-view.active { display: block; animation: fadeIn 0.3s; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 狀態列與列表 */
         .status-row { display: flex; gap: 8px; margin-bottom: 20px; }
         .status-btn { flex: 1; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-muted); margin: 0; font-size: 0.9rem; }
         .status-btn.active { background: var(--pol-blue); color: white; border-color: var(--pol-blue); }
@@ -61,10 +60,8 @@
         .char-card:hover { background: #27272a; }
         .char-card.active { border-color: var(--civ-green); background: rgba(34, 197, 94, 0.15); }
         
-        /* 日誌表格 */
         .log-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         .log-table th, .log-table td { padding: 8px; text-align: left; border-bottom: 1px solid var(--border); }
-        .log-table th { color: var(--text-muted); }
     </style>
 </head>
 <body>
@@ -103,13 +100,10 @@
         <h3 style="margin-top:0; color:white;">📁 歷史案件詳情</h3>
         <p style="color:var(--text-muted); font-size:0.9rem;" id="hist-time"></p>
         <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border); margin-bottom:15px;">
-            <strong style="color:white; font-size:1.1rem;" id="hist-title"></strong><br>
-            <span style="color:var(--text-muted);" id="hist-loc"></span>
+            <strong style="color:white; font-size:1.1rem;" id="hist-title"></strong><br><span style="color:var(--text-muted);" id="hist-loc"></span>
         </div>
         <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border); color:white; min-height:80px;" id="hist-desc"></div>
-        <div class="flex" style="margin-top:15px;">
-            <button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('history-modal')">關閉</button>
-        </div>
+        <div class="flex" style="margin-top:15px;"><button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('history-modal')">關閉</button></div>
     </div>
 </div>
 
@@ -120,6 +114,25 @@
             <button class="btn-danger" style="margin:0; padding:6px 12px;" onclick="closeModal('law-modal')">關閉視窗</button>
         </div>
         <iframe src="https://amingwang.github.io/Amongst/" style="width:100%; flex:1; border:none; border-radius:6px; background:white;"></iframe>
+    </div>
+</div>
+
+<div class="modal-overlay" id="edit-citizen-modal">
+    <div class="modal-box">
+        <h3 style="margin-top:0; color:white;">📝 編輯市民檔案 (Admin)</h3>
+        <input type="hidden" id="adm-civ-id">
+        <label style="font-size:0.85rem; color:var(--text-muted);">完整姓名</label>
+        <input type="text" id="adm-civ-name">
+        <div class="flex">
+            <div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted);">出生年月日</label><input type="date" id="adm-civ-dob"></div>
+            <div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted);">性別</label><select id="adm-civ-gender"><option>男</option><option>女</option></select></div>
+        </div>
+        <label style="font-size:0.85rem; color:var(--text-muted);">居住地址</label>
+        <input type="text" id="adm-civ-addr">
+        <div class="flex" style="margin-top:15px;">
+            <button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('edit-citizen-modal')">取消</button>
+            <button class="btn-warning" style="width:100%; margin:0; color:black;" onclick="saveEditedCitizen()">強制儲存</button>
+        </div>
     </div>
 </div>
 
@@ -171,11 +184,11 @@
                 <button class="btn-danger" style="margin:0; font-size:1.1rem;" onclick="triggerPanic()">🚨 10-99 (PANIC BUTTON)</button>
             </div>
             <div class="status-row" id="pol-status-row" style="opacity: 0.5; pointer-events: none;">
-                <button class="status-btn" onclick="setUnitStatus('10-8 (巡邏中)')">10-8 巡邏 (On Duty)</button>
-                <button class="status-btn" onclick="setUnitStatus('10-7 (下班)')">10-7 下班 (Off Duty)</button>
-                <button class="status-btn" onclick="setUnitStatus('10-23 (抵達現場)')">10-23 抵達現場</button>
-                <button class="status-btn" onclick="setUnitStatus('10-97 (前往案件)')">10-97 前往案件</button>
-                <button class="status-btn" onclick="setUnitStatus('10-15 (押送嫌犯)')">10-15 押送嫌犯</button>
+                <button class="status-btn" onclick="setUnitStatus('10-8 (巡邏中)')">10-8 巡邏</button>
+                <button class="status-btn" onclick="setUnitStatus('10-7 (下班)')">10-7 下班</button>
+                <button class="status-btn" onclick="setUnitStatus('10-23 (抵達現場)')">10-23 抵達</button>
+                <button class="status-btn" onclick="setUnitStatus('10-97 (前往案件)')">10-97 前往</button>
+                <button class="status-btn" onclick="setUnitStatus('10-15 (押送嫌犯)')">10-15 押送</button>
             </div>
             <div class="grid-2">
                 <div class="card">
@@ -184,20 +197,29 @@
                 </div>
                 <div class="card">
                     <div class="card-header">🔍 NCIC 資料庫檢索</div>
-                    <div class="flex">
-                        <select id="ncic-type" style="width:140px; margin:0;"><option value="citizen">👤 姓名/身分證</option><option value="vehicle">🚗 車牌號碼</option><option value="weapon">🔫 槍枝序號</option></select>
-                        <input type="text" id="ncic-query" placeholder="精確輸入..." style="margin:0;">
-                        <button class="btn-pol" style="margin:0; width:100px;" onclick="runNCIC()">檢索</button>
+                    <select id="ncic-type" style="margin-bottom:10px;" onchange="toggleNcicInputs()">
+                        <option value="citizen">👤 查人 (姓名查詢)</option>
+                        <option value="id">🆔 查人 (身分證字號)</option>
+                        <option value="vehicle">🚗 查車 (車牌)</option>
+                        <option value="weapon">🔫 查槍 (序號)</option>
+                    </select>
+                    
+                    <div id="ncic-name-inputs" class="flex">
+                        <input type="text" id="ncic-last" placeholder="姓 (Last Name)" style="margin:0; flex:1;">
+                        <input type="text" id="ncic-first" placeholder="名 (First Name)" style="margin:0; flex:1;">
+                        <button class="btn-pol" style="margin:0;" onclick="runNCIC()">檢索</button>
                     </div>
-                    <div id="ncic-result" style="margin-top:15px; padding:15px; background:var(--bg-input); border-radius:6px; min-height:100px; color:var(--text-muted);">等待輸入查詢條件...</div>
+                    <div id="ncic-id-inputs" class="flex" style="display:none;">
+                        <input type="text" id="ncic-query" placeholder="精確輸入字號或車牌..." style="margin:0; flex:1;">
+                        <button class="btn-pol" style="margin:0;" onclick="runNCIC()">檢索</button>
+                    </div>
+
+                    <div id="ncic-result" style="margin-top:15px; padding:15px; background:var(--bg-input); border-radius:6px; min-height:150px; color:var(--text-muted); max-height:350px; overflow-y:auto;">等待輸入查詢條件...</div>
                 </div>
             </div>
             <div class="grid-2" style="margin-top:20px;">
                 <div class="card">
-                    <div class="card-header">
-                        📝 開立罰單與前科
-                        <button class="btn-dark" style="margin:0; padding:4px 8px; font-size:0.85rem;" onclick="openModal('law-modal')">📖 查閱伺服器法規</button>
-                    </div>
+                    <div class="card-header">📝 開立罰單與前科 <button class="btn-dark" style="margin:0; padding:4px 8px; font-size:0.85rem;" onclick="openModal('law-modal')">📖 查閱法規</button></div>
                     <input type="text" id="ticket-id" placeholder="嫌疑人身分證號">
                     <select id="ticket-law"><option value="">載入法典中...</option></select>
                     <input type="number" id="ticket-fine" placeholder="罰款金額 (系統帶入)">
@@ -215,16 +237,12 @@
         <div id="view-dispatch" class="dept-view">
             <div class="flex" style="justify-content:space-between; margin-bottom: 20px;">
                 <h2 style="margin:0;">911 綜合調度指揮中心 (CAD)</h2>
-                <button class="btn-danger" style="margin:0;" onclick="forceAllOffline()">⛔ 強制所有警員下線 (10-7)</button>
+                <button class="btn-danger" style="margin:0;" onclick="forceAllOffline()">⛔ 強制所有單位下線 (10-7)</button>
             </div>
             <div class="grid-3">
                 <div class="card" style="height:fit-content; border-top: 4px solid var(--disp-purple);">
                     <div class="card-header">📡 建立新案件</div>
-                    <select id="disp-priority">
-                        <option value="1">Priority 1 (最高緊急)</option>
-                        <option value="2">Priority 2 (常規緊急)</option>
-                        <option value="3">Priority 3 (一般案件)</option>
-                    </select>
+                    <select id="disp-priority"><option value="1">Priority 1 (最高緊急)</option><option value="2">Priority 2 (常規緊急)</option><option value="3">Priority 3 (一般案件)</option></select>
                     <input type="text" id="disp-title" placeholder="案件代號/標題">
                     <input type="text" id="disp-loc" placeholder="發生地點">
                     <textarea id="disp-desc" rows="3" placeholder="詳細狀況"></textarea>
@@ -276,7 +294,7 @@
                     <div id="civ-char-list" style="max-height:200px; overflow-y:auto; margin-bottom:15px;"></div>
                     <hr style="border-color:var(--border); margin:0 0 15px 0;">
                     <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px;">建立新身分</div>
-                    <div class="flex"><input type="text" id="civ-last" placeholder="姓"><input type="text" id="civ-first" placeholder="名"></div>
+                    <div class="flex"><input type="text" id="civ-last" placeholder="姓 (Last)"><input type="text" id="civ-first" placeholder="名 (First)"></div>
                     <div class="flex"><input type="date" id="civ-dob" style="flex:2;"><select id="civ-gender" style="flex:1;"><option>男</option><option>女</option></select></div>
                     <input type="text" id="civ-addr" placeholder="居住地址 (例如: 密申羅 1 號)">
                     <button class="btn-civ" style="width:100%; margin:0;" onclick="createCharacter()">建立檔案</button>
@@ -290,9 +308,14 @@
                     <div class="grid-2">
                         <div style="display:flex; flex-direction:column; gap:20px;">
                             <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border);">
-                                <h3 style="margin-top:0;">資產與執照登記</h3>
-                                <select id="civ-asset-type"><option value="車輛">🚗 車輛登記</option><option value="槍枝">🔫 槍枝許可</option><option value="執照">📄 專業執照</option></select>
-                                <input type="text" id="civ-asset-detail" placeholder="輸入車牌號碼 / 槍枝序號 / 執照名稱">
+                                <h3 style="margin-top:0;">📋 申請/登記資產</h3>
+                                <select id="civ-asset-type" onchange="toggleCivAssetInput()">
+                                    <option value="車輛">🚗 車輛登記</option>
+                                    <option value="槍枝">🔫 槍枝登記</option>
+                                    <option value="駕駛執照">📄 申請駕駛執照</option>
+                                    <option value="槍械執照">📄 申請槍械執照</option>
+                                </select>
+                                <input type="text" id="civ-asset-detail" placeholder="輸入車牌號碼 / 槍枝序號">
                                 <button class="btn-dark" style="width:100%; margin:0;" onclick="registerAsset()">送出登記申請</button>
                             </div>
                             <div style="background:rgba(239, 68, 68, 0.1); padding:15px; border-radius:6px; border:1px solid var(--danger);">
@@ -302,9 +325,15 @@
                                 <button class="btn-danger" style="width:100%; margin:0;" onclick="send911()">發送緊急求救</button>
                             </div>
                         </div>
-                        <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border);">
-                            <h3 style="margin-top:0;">我的未繳罰單與前科</h3>
-                            <div id="civ-tickets-board" style="overflow-y:auto; max-height:280px; color:var(--text-muted);">讀取中...</div>
+                        <div style="display:flex; flex-direction:column; gap:20px;">
+                            <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border); flex:1;">
+                                <h3 style="margin-top:0;">我的未繳罰單</h3>
+                                <div id="civ-tickets-board" style="overflow-y:auto; max-height:180px; color:var(--text-muted);">讀取中...</div>
+                            </div>
+                            <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border); flex:1;">
+                                <h3 style="margin-top:0;">我名下的資產/執照</h3>
+                                <div id="civ-assets-board" style="overflow-y:auto; max-height:180px; color:var(--text-muted);">讀取中...</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -313,24 +342,40 @@
 
         <div id="view-admin" class="dept-view">
             <h2 style="margin-top:0; margin-bottom: 20px;">系統管理後台 (Root Admin)</h2>
-            <div class="grid-2">
-                <div class="card" style="grid-column: span 2;">
-                    <div class="card-header">
-                        🛡️ 系統防弊稽核紀錄 (Audit Logs)
-                        <button class="btn-dark" style="margin:0; padding:4px 8px; font-size:0.85rem;" onclick="openModal('law-modal')">📖 查閱伺服器法規</button>
+            <div class="grid-3">
+                
+                <div class="card" style="display:flex; flex-direction:column;">
+                    <div class="card-header">⚖️ 刑法典管理 <button class="btn-dark" style="margin:0; padding:4px 8px; font-size:0.85rem;" onclick="openModal('law-modal')">📖 查閱法規</button></div>
+                    <div class="flex">
+                        <input type="text" id="adm-law-name" placeholder="罪名" style="margin:0;">
+                        <input type="number" id="adm-law-fine" placeholder="罰款$" style="margin:0; width:90px;">
+                        <button class="btn-dark" style="margin:0;" onclick="addLaw()">新增</button>
                     </div>
-                    <div class="flex" style="margin-bottom:10px;">
-                        <button class="btn-dark" onclick="filterLogs('all')">全部</button>
-                        <button class="btn-pol" onclick="filterLogs('police')">警察操作</button>
-                        <button class="btn-ems" onclick="filterLogs('ems')">醫護操作</button>
-                        <button class="btn-disp" onclick="filterLogs('dispatch')">調度操作</button>
-                        <button class="btn-civ" onclick="filterLogs('citizen')">市民操作</button>
-                    </div>
-                    <div style="max-height: 250px; overflow-y:auto; background:var(--bg-input); border:1px solid var(--border);">
-                        <table class="log-table">
-                            <thead><tr><th width="150">時間</th><th width="100">部門</th><th width="150">人員</th><th>操作內容</th></tr></thead>
-                            <tbody id="audit-table-body"></tbody>
-                        </table>
+                    <div id="adm-laws-board" style="margin-top:15px; flex:1; overflow-y:auto; border-top:1px solid var(--border); padding-top:10px;"></div>
+                    
+                    <hr style="border-color:var(--border); width:100%; margin:15px 0;">
+                    
+                    <div class="card-header" style="color:var(--danger); border:none; padding:0; margin-bottom:10px;">⚠️ 資料庫清理</div>
+                    <button class="btn-disp" style="width:100%;" onclick="backupData()">📥 匯出案件備份 (JSON)</button>
+                    <button class="btn-danger" style="width:100%; margin:0;" onclick="clearAllHistory()">🧹 清空歷史案件</button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">👥 全伺服器市民管理</div>
+                    <input type="text" id="adm-civ-search" placeholder="搜尋市民姓名或身分證..." onkeyup="filterAdminCitizens()">
+                    <div id="adm-citizens-board" style="overflow-y:auto; max-height: 450px;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">🛡️ 系統稽核紀錄 (Logs)</div>
+                    <select id="log-filter" onchange="filterLogs(this.value)">
+                        <option value="all">全部紀錄</option>
+                        <option value="police">警察操作</option>
+                        <option value="dispatch">調度操作</option>
+                        <option value="citizen">市民操作</option>
+                    </select>
+                    <div style="flex:1; overflow-y:auto; background:var(--bg-input); border:1px solid var(--border);">
+                        <table class="log-table"><tbody id="audit-table-body"></tbody></table>
                     </div>
                 </div>
             </div>
@@ -361,10 +406,10 @@
     const DEPT_KEYS = { police: "1111", ems: "2222", dispatch: "3333", admin: "9999" };
     let currentUser = null, currentDept = null, targetDept = null;
     let myUnitId = null, activeCitizenId = null, activeCitizenName = null;
-    let onlineUnits = [], penalCodes = [], auditLogsData = [];
+    let onlineUnits = [], penalCodes = [], auditLogsData = [], allCitizensData = [];
 
     // ==========================================
-    // 系統底層 (UI, Modal, Clock)
+    // 基礎與 Auth
     // ==========================================
     setInterval(() => { document.getElementById("sys-time").innerText = new Date().toLocaleTimeString('en-US', { hour12: false }); }, 1000);
     window.openModal = (id) => { document.getElementById(id).style.display = 'flex'; };
@@ -375,19 +420,14 @@
         await addDoc(collection(db, "audit_logs"), { category, user: userName, action, timestamp: serverTimestamp() });
     };
 
-    // ==========================================
-    // Auth & 自動下班登出邏輯
-    // ==========================================
     window.signInWithGoogle = () => { signInWithPopup(auth, googleProvider).catch(e => alert("登入失敗: " + e.message)); };
     
-    // 強制下班並重新整理
     window.systemLogout = async () => {
-        if(myUnitId) await updateDoc(doc(db, "units", myUnitId), { status: "10-7 (下班/登出)" });
+        if(myUnitId) await updateDoc(doc(db, "units", myUnitId), { status: "10-7 (自動下班)" });
         location.reload();
     };
-
     window.logOut = async () => {
-        if(myUnitId) await updateDoc(doc(db, "units", myUnitId), { status: "10-7 (下班/登出)" });
+        if(myUnitId) await updateDoc(doc(db, "units", myUnitId), { status: "10-7 (自動下班)" });
         signOut(auth); location.reload();
     };
 
@@ -401,15 +441,9 @@
         }
     });
 
-    window.openPinModal = (dept) => {
-        targetDept = dept;
-        if(dept === 'citizen') verifyPin(true);
-        else { document.getElementById("pin-input").value = ""; openModal('pin-modal'); }
-    };
-
+    window.openPinModal = (dept) => { targetDept = dept; if(dept === 'citizen') verifyPin(true); else { document.getElementById("pin-input").value = ""; openModal('pin-modal'); }};
     window.verifyPin = (bypass = false) => {
-        const pin = document.getElementById("pin-input").value;
-        if (!bypass && pin !== DEPT_KEYS[targetDept]) return alert("❌ 金鑰錯誤！");
+        if (!bypass && document.getElementById("pin-input").value !== DEPT_KEYS[targetDept]) return alert("❌ 金鑰錯誤！");
         closeModal('pin-modal'); currentDept = targetDept;
         document.getElementById("dept-screen").style.display = "none"; document.getElementById("app").style.display = "flex";
         
@@ -424,135 +458,142 @@
     };
 
     // ==========================================
-    // 警消共用邏輯
+    // 警消共用
     // ==========================================
     window.goOnDuty = async () => {
-        const callsign = document.getElementById("global-callsign").value.trim();
-        if(!callsign) return alert("請輸入呼號！");
-        const deptTag = currentDept === 'police' ? "LSPD" : "LSFD";
-        const ref = await addDoc(collection(db, "units"), { name: callsign, dept: deptTag, status: "10-8 (剛上線)", timestamp: serverTimestamp() });
-        myUnitId = ref.id;
-
-        document.getElementById("global-callsign").disabled = true;
-        document.getElementById("duty-btn").innerText = "已上線"; document.getElementById("duty-btn").disabled = true;
+        const cs = document.getElementById("global-callsign").value.trim(); if(!cs) return alert("輸入呼號！");
+        const ref = await addDoc(collection(db, "units"), { name: cs, dept: currentDept==='police'?"LSPD":"LSFD", status: "10-8 (剛上線)", timestamp: serverTimestamp() });
+        myUnitId = ref.id; document.getElementById("global-callsign").disabled = true; document.getElementById("duty-btn").innerText = "已上線"; document.getElementById("duty-btn").disabled = true;
         if(currentDept === 'police') document.getElementById("pol-status-row").style.cssText = "opacity:1; pointer-events:auto;";
         if(currentDept === 'ems') document.getElementById("ems-status-row").style.cssText = "opacity:1; pointer-events:auto;";
-        logAudit(currentDept, `單位上線打卡 (10-8)`);
+        logAudit(currentDept, `上線打卡`);
     };
 
-    window.setUnitStatus = async (status) => {
-        if(!myUnitId) return;
-        document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active');
-        await updateDoc(doc(db, "units", myUnitId), { status: status });
-        logAudit(currentDept, `更改狀態為: ${status}`);
+    window.setUnitStatus = async (s) => {
+        if(!myUnitId) return; document.querySelectorAll('.status-btn').forEach(b => b.classList.remove('active')); event.target.classList.add('active');
+        await updateDoc(doc(db, "units", myUnitId), { status: s }); logAudit(currentDept, `狀態改為: ${s}`);
     };
 
-    // ==========================================
-    // 警察 (Police)
-    // ==========================================
     window.triggerPanic = async () => {
-        const cs = document.getElementById("global-callsign").value || "未知單位";
-        await addDoc(collection(db, "emergency"), { caller: cs, timestamp: serverTimestamp() });
-        logAudit('police', `觸發 10-99 緊急警報`);
+        await addDoc(collection(db, "emergency"), { caller: document.getElementById("global-callsign").value || "未知", timestamp: serverTimestamp() });
+        logAudit('police', `觸發 10-99`);
+    };
+
+    // ==========================================
+    // 警察 NCIC 與開單
+    // ==========================================
+    window.toggleNcicInputs = () => {
+        const t = document.getElementById("ncic-type").value;
+        if(t === 'citizen') { document.getElementById("ncic-name-inputs").style.display = 'flex'; document.getElementById("ncic-id-inputs").style.display = 'none'; }
+        else { document.getElementById("ncic-name-inputs").style.display = 'none'; document.getElementById("ncic-id-inputs").style.display = 'flex'; }
     };
 
     window.runNCIC = async () => {
         const type = document.getElementById("ncic-type").value;
-        const rawQuery = document.getElementById("ncic-query").value.trim();
-        const qVal = rawQuery.toUpperCase();
         const resBox = document.getElementById("ncic-result");
-        if(!rawQuery) return; resBox.innerHTML = "聯邦資料庫檢索中...";
+        resBox.innerHTML = "聯邦資料庫檢索中...";
 
         try {
-            if(type === 'citizen') {
+            if(type === 'citizen' || type === 'id') {
                 let cDoc = null;
-                // 先查身分證 (大寫)
-                const qId = await getDocs(query(collection(db, "citizens"), where("citizenId", "==", qVal)));
-                if (!qId.empty) cDoc = qId.docs[0];
-                else {
-                    // 再查姓名 (區分大小寫的精確匹配)
-                    const qName = await getDocs(query(collection(db, "citizens"), where("fullName", "==", rawQuery)));
-                    if (!qName.empty) cDoc = qName.docs[0];
+                if(type === 'citizen') {
+                    const last = document.getElementById("ncic-last").value.trim();
+                    const first = document.getElementById("ncic-first").value.trim();
+                    if(!last || !first) return resBox.innerHTML = "請輸入完整的姓與名。";
+                    const snap = await getDocs(query(collection(db, "citizens"), where("fullName", "==", `${last} ${first}`)));
+                    if(!snap.empty) cDoc = snap.docs[0];
+                } else {
+                    const q = document.getElementById("ncic-query").value.trim().toUpperCase();
+                    if(!q) return;
+                    const snap = await getDocs(query(collection(db, "citizens"), where("citizenId", "==", q)));
+                    if(!snap.empty) cDoc = snap.docs[0];
                 }
                 
                 if(cDoc) {
                     const data = cDoc.data();
-                    const wSnap = await getDocs(query(collection(db, "warrants"), where("citizenId", "==", data.citizenId)));
-                    let wText = wSnap.empty ? "<span class='badge' style='background:var(--civ-green);'>無通緝</span>" : `<span class='badge badge-danger'>⚠️ 通緝中: ${wSnap.docs[0].data().reason}</span>`;
                     
-                    resBox.innerHTML = `<strong style="color:var(--pol-blue);">👤 市民檔案</strong><br>
+                    // 抓取通緝
+                    const wSnap = await getDocs(query(collection(db, "warrants"), where("citizenId", "==", data.citizenId)));
+                    let wHtml = "";
+                    wSnap.forEach(d => { wHtml += `<div style="color:var(--danger); margin-bottom:5px;">⚠️ ${d.data().reason} <button class="btn-dark" style="padding:2px 6px; font-size:0.75rem; margin:0;" onclick="deleteWarrant('${d.id}')">撤銷通緝</button></div>`; });
+                    if(!wHtml) wHtml = "<span class='badge' style='background:var(--civ-green);'>無通緝紀錄</span>";
+
+                    // 抓取資產
+                    const aSnap = await getDocs(query(collection(db, "assets"), where("citizenId", "==", data.citizenId)));
+                    let aHtml = "";
+                    aSnap.forEach(d => { aHtml += `<div class="badge" style="background:#444; margin-bottom:5px;">[${d.data().type}] ${d.data().detail}</div> `; });
+                    if(!aHtml) aHtml = "<span style='color:#777; font-size:0.85rem;'>名下無任何資產或執照。</span>";
+
+                    resBox.innerHTML = `<strong style="color:var(--pol-blue); font-size:1.1rem;">👤 綜合市民檔案</strong><br><br>
                         <strong>身分證:</strong> ${data.citizenId}<br><strong>姓名:</strong> ${data.fullName}<br>
                         <strong>生日:</strong> ${data.dob} | <strong>性別:</strong> ${data.gender}<br>
-                        <strong>住址:</strong> ${data.address}<br><strong>狀態:</strong> ${wText}`;
-                } else resBox.innerHTML = "<span style='color:var(--danger)'>查無此身分證或姓名。</span>";
+                        <strong>住址:</strong> ${data.address}<hr style="border-color:var(--border);">
+                        <strong>🚨 通緝狀態:</strong><br>${wHtml}<hr style="border-color:var(--border);">
+                        <strong>📋 名下資產/執照:</strong><br>${aHtml}`;
+                } else resBox.innerHTML = "<span style='color:var(--danger)'>查無此人。</span>";
             } else {
-                const snap = await getDocs(query(collection(db, "assets"), where("type", "==", type==='vehicle'?'車輛':'槍枝'), where("detail", "==", qVal)));
+                const q = document.getElementById("ncic-query").value.trim().toUpperCase();
+                const snap = await getDocs(query(collection(db, "assets"), where("type", "==", type==='vehicle'?'車輛':'槍枝'), where("detail", "==", q)));
                 if(!snap.empty) {
                     const data = snap.docs[0].data();
                     resBox.innerHTML = `<strong style="color:var(--pol-blue);">📝 資產紀錄</strong><br>
-                        <strong>登記碼:</strong> ${data.detail}<br><strong>所有人:</strong> ${data.ownerName} (${data.citizenId})<br><span style='color:var(--civ-green)'>合法登記</span>`;
+                        <strong>類型:</strong> ${data.type}<br><strong>登記碼:</strong> ${data.detail}<br><strong>所有人:</strong> ${data.ownerName} (${data.citizenId})<br><span style='color:var(--civ-green)'>合法登記</span>`;
                 } else resBox.innerHTML = "<span style='color:var(--warning)'>查無登記，疑似黑市物品。</span>";
             }
-            logAudit('police', `執行 NCIC 查詢: ${rawQuery}`);
+            logAudit('police', `NCIC 查詢`);
         } catch(e) { resBox.innerHTML = "錯誤。"; }
     };
 
+    window.deleteWarrant = async (id) => {
+        if(confirm("確定要撤銷此通緝令嗎？")) { await deleteDoc(doc(db, "warrants", id)); alert("撤銷成功！請重新檢索刷新。"); logAudit('police', `撤銷通緝令`); }
+    };
+
     document.getElementById("ticket-law").addEventListener("change", (e) => {
-        const law = penalCodes.find(p => p.name === e.target.value);
-        if(law) document.getElementById("ticket-fine").value = law.fine;
+        const law = penalCodes.find(p => p.name === e.target.value); if(law) document.getElementById("ticket-fine").value = law.fine;
     });
 
     window.issueTicket = async () => {
-        const cid = document.getElementById("ticket-id").value; const reason = document.getElementById("ticket-law").value; const fine = document.getElementById("ticket-fine").value;
-        if(!cid || !reason) return;
-        await addDoc(collection(db, "tickets"), { citizenId: cid, reason, fine: Number(fine), timestamp: serverTimestamp() });
-        alert("✅ 罰單已寫入前科庫！"); logAudit('police', `對 ${cid} 開立罰單: ${reason}`);
+        const cid = document.getElementById("ticket-id").value; const r = document.getElementById("ticket-law").value; const f = document.getElementById("ticket-fine").value;
+        if(!cid || !r) return; await addDoc(collection(db, "tickets"), { citizenId: cid, reason: r, fine: Number(f), timestamp: serverTimestamp() });
+        alert("✅ 罰單入檔！"); logAudit('police', `開立罰單`);
     };
 
     window.issueWarrant = async () => {
-        const cid = document.getElementById("warrant-id").value; const reason = document.getElementById("warrant-reason").value;
-        if(!cid) return;
-        await addDoc(collection(db, "warrants"), { citizenId: cid, reason, timestamp: serverTimestamp() });
-        alert("✅ 全國通緝令發布！"); logAudit('police', `對 ${cid} 發布通緝: ${reason}`);
+        const cid = document.getElementById("warrant-id").value; const r = document.getElementById("warrant-reason").value;
+        if(!cid || !r) return; await addDoc(collection(db, "warrants"), { citizenId: cid, reason: r, timestamp: serverTimestamp() });
+        alert("✅ 通緝令發布！"); logAudit('police', `發布通緝`);
     };
 
     // ==========================================
     // 調度 (Dispatch)
     // ==========================================
     window.createCall = async () => {
-        const priority = document.getElementById("disp-priority").value; const title = document.getElementById("disp-title").value;
-        const loc = document.getElementById("disp-loc").value; const desc = document.getElementById("disp-desc").value;
-        if(!title || !loc) return alert("標題與地點必填！");
-        await addDoc(collection(db, "incidents"), { priority, title, location: loc, desc, primaryUnit: null, assignedUnits: [], status: "Active", timestamp: serverTimestamp() });
+        const p = document.getElementById("disp-priority").value; const t = document.getElementById("disp-title").value;
+        const l = document.getElementById("disp-loc").value; const d = document.getElementById("disp-desc").value;
+        if(!t || !l) return;
+        await addDoc(collection(db, "incidents"), { priority: p, title: t, location: l, desc: d, primaryUnit: null, assignedUnits: [], status: "Active", timestamp: serverTimestamp() });
         document.getElementById("disp-title").value = ""; document.getElementById("disp-loc").value = ""; document.getElementById("disp-desc").value = "";
-        logAudit('dispatch', `建立案件: ${title}`);
+        logAudit('dispatch', `建立案件`);
     };
 
-    window.setPrimaryUnit = async (incId, unitId) => {
-        if(unitId) { await updateDoc(doc(db, "incidents", incId), { primaryUnit: unitId }); logAudit('dispatch', `設定案件主響應單位`); }
-    };
+    window.setPrimaryUnit = async (incId, unitId) => { if(unitId) await updateDoc(doc(db, "incidents", incId), { primaryUnit: unitId }); };
     window.addAssistUnit = async (incId, unitId) => { if(unitId) await updateDoc(doc(db, "incidents", incId), { assignedUnits: arrayUnion(unitId) }); };
     window.unassignUnit = async (incId, unitId, isPrimary) => {
-        if(isPrimary) await updateDoc(doc(db, "incidents", incId), { primaryUnit: null });
-        else await updateDoc(doc(db, "incidents", incId), { assignedUnits: arrayRemove(unitId) });
+        if(isPrimary) await updateDoc(doc(db, "incidents", incId), { primaryUnit: null }); else await updateDoc(doc(db, "incidents", incId), { assignedUnits: arrayRemove(unitId) });
     };
 
     window.openEditCallModal = (id, title, loc, desc) => {
         document.getElementById("edit-call-id").value = id; document.getElementById("edit-call-title").value = title;
-        document.getElementById("edit-call-loc").value = loc; document.getElementById("edit-call-desc").value = desc;
-        openModal('edit-call-modal');
+        document.getElementById("edit-call-loc").value = loc; document.getElementById("edit-call-desc").value = desc; openModal('edit-call-modal');
     };
-
     window.saveEditedCall = async () => {
         const id = document.getElementById("edit-call-id").value;
         await updateDoc(doc(db, "incidents", id), { title: document.getElementById("edit-call-title").value, location: document.getElementById("edit-call-loc").value, desc: document.getElementById("edit-call-desc").value });
-        closeModal('edit-call-modal'); logAudit(currentDept, `編輯案件資訊`);
+        closeModal('edit-call-modal'); logAudit(currentDept, `編輯案件`);
     };
 
     window.endCall = async (incId) => {
-        if(confirm("確定結束此案件？將轉入歷史區。")) {
-            await updateDoc(doc(db, "incidents", incId), { status: "Archived" }); logAudit(currentDept, `結束案件並歸檔`);
-        }
+        if(confirm("確定結束此案件？將轉入歷史區。")) { await updateDoc(doc(db, "incidents", incId), { status: "Archived" }); logAudit(currentDept, `結束案件`); }
     };
 
     window.forceAllOffline = async () => {
@@ -569,24 +610,15 @@
     };
 
     // ==========================================
-    // 醫護 (EMS)
-    // ==========================================
-    window.saveMedReport = async () => {
-        const p = document.getElementById("med-patient").value;
-        if(p) { await addDoc(collection(db, "medical_reports"), { patient: p, desc: document.getElementById("med-desc").value, timestamp: serverTimestamp() }); alert("報告入檔"); logAudit('ems', `填寫醫療報告`);}
-    };
-
-    // ==========================================
     // 市民 (Citizen)
     // ==========================================
     window.createCharacter = async () => {
         const last = document.getElementById("civ-last").value.trim(); const first = document.getElementById("civ-first").value.trim();
         const dob = document.getElementById("civ-dob").value; const gender = document.getElementById("civ-gender").value; const address = document.getElementById("civ-addr").value;
         if(!last || !first || !dob) return alert("資料不完整");
-        
         const fullName = `${last} ${first}`; const citizenId = "CIT-" + Math.floor(1000 + Math.random() * 9000);
         await addDoc(collection(db, "citizens"), { userId: currentUser.uid, fullName, dob, gender, address, citizenId, timestamp: serverTimestamp() });
-        logAudit('citizen', `建立新市民角色: ${fullName}`);
+        logAudit('citizen', `建立角色: ${fullName}`);
     };
 
     const loadMyCharacters = () => {
@@ -607,37 +639,112 @@
         document.querySelectorAll('.char-card').forEach(c => c.classList.remove('active')); document.getElementById(`char-${id}`).classList.add('active');
         document.getElementById("civ-action-panel").style.display = "block"; document.getElementById("civ-active-name").innerText = name; document.getElementById("civ-active-id").innerText = id;
 
+        // 載入罰單
         onSnapshot(query(collection(db, "tickets"), where("citizenId", "==", id)), (snap) => {
             let html = "";
             snap.forEach(d => {
-                html += `<div class="list-item" style="border-left-color:var(--danger); flex-direction:column; align-items:flex-start;">
-                            <div style="width:100%; display:flex; justify-content:space-between;"><strong>${d.data().reason}</strong><span class="badge" style="background:var(--warning); color:black;">$${d.data().fine}</span></div>
-                            <button class="btn-civ" style="margin-top:10px; padding:6px 12px;" onclick="payTicket('${d.id}')">繳納</button>
+                html += `<div class="list-item" style="border-left-color:var(--danger); flex-direction:row; align-items:center;">
+                            <div style="flex:1;"><strong>${d.data().reason}</strong> <span class="badge" style="background:var(--warning); color:black;">$${d.data().fine}</span></div>
+                            <button class="btn-civ" style="margin:0; padding:6px 12px;" onclick="payTicket('${d.id}')">繳納</button>
                          </div>`;
             });
             document.getElementById("civ-tickets-board").innerHTML = html || "無未繳罰單。";
         });
+
+        // 載入資產
+        onSnapshot(query(collection(db, "assets"), where("citizenId", "==", id)), (snap) => {
+            let html = "";
+            snap.forEach(d => {
+                html += `<div class="list-item" style="border-left-color:var(--civ-green); flex-direction:row; align-items:center;">
+                            <div style="flex:1;">[${d.data().type}] <strong>${d.data().detail}</strong></div>
+                            <button class="btn-danger" style="margin:0; padding:6px 12px;" onclick="deleteAsset('${d.id}')">刪除/註銷</button>
+                         </div>`;
+            });
+            document.getElementById("civ-assets-board").innerHTML = html || "名下無登記資產。";
+        });
+    };
+
+    window.toggleCivAssetInput = () => {
+        const type = document.getElementById("civ-asset-type").value;
+        if(type === '駕駛執照' || type === '槍械執照') {
+            document.getElementById("civ-asset-detail").value = type;
+            document.getElementById("civ-asset-detail").disabled = true;
+        } else {
+            document.getElementById("civ-asset-detail").value = "";
+            document.getElementById("civ-asset-detail").disabled = false;
+        }
     };
 
     window.registerAsset = async () => {
-        const type = document.getElementById("civ-asset-type").value; const detail = document.getElementById("civ-asset-detail").value.toUpperCase();
+        const type = document.getElementById("civ-asset-type").value;
+        const detail = document.getElementById("civ-asset-detail").value.toUpperCase();
         if(!detail) return;
         await addDoc(collection(db, "assets"), { citizenId: activeCitizenId, ownerName: activeCitizenName, type, detail });
-        alert("資產登記完成"); document.getElementById("civ-asset-detail").value = ""; logAudit('citizen', `登記資產: ${type} ${detail}`);
+        alert("登記完成"); document.getElementById("civ-asset-detail").value = ""; toggleCivAssetInput(); logAudit('citizen', `登記資產: ${type}`);
     };
 
+    window.deleteAsset = async (id) => { if(confirm("確定要刪除/註銷此資料嗎？")) { await deleteDoc(doc(db, "assets", id)); logAudit('citizen', '刪除資產'); }};
     window.payTicket = async (id) => { await deleteDoc(doc(db, "tickets", id)); alert("繳納成功"); logAudit('citizen', `繳納罰單`); };
 
     window.send911 = async () => {
         const loc = document.getElementById("civ-911-loc").value; const desc = document.getElementById("civ-911-desc").value;
         if(!loc) return alert("地點必填");
         await addDoc(collection(db, "incidents"), { priority: "1", title: "🚨 911 報案", location: loc, desc, primaryUnit: null, assignedUnits: [], status: "Active", timestamp: serverTimestamp() });
-        alert("已報案！"); document.getElementById("civ-911-loc").value = ""; document.getElementById("civ-911-desc").value = ""; logAudit('citizen', `發送 911 報案`);
+        alert("已報案！"); document.getElementById("civ-911-loc").value = ""; document.getElementById("civ-911-desc").value = ""; logAudit('citizen', `發送 911`);
     };
 
     // ==========================================
-    // ⚙️ 稽核日誌
+    // ⚙️ 管理員 & 戶政管理
     // ==========================================
+    window.addLaw = async () => {
+        const n = document.getElementById("adm-law-name").value; const f = document.getElementById("adm-law-fine").value;
+        if(n) { await addDoc(collection(db, "penal_codes"), { name: n, fine: Number(f) }); document.getElementById("adm-law-name").value = ""; }
+    };
+    window.deleteLaw = async (id) => { if(confirm("確定刪除此法條？")) { await deleteDoc(doc(db, "penal_codes", id)); }};
+
+    window.backupData = async () => {
+        const snap = await getDocs(collection(db, "incidents"));
+        const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob); const a = document.createElement('a');
+        a.href = url; a.download = `CAD_Backup.json`; a.click(); logAudit('admin', '匯出備份');
+    };
+    window.clearAllHistory = async () => {
+        if(!confirm("確定刪除所有「歷史案件」嗎？不可復原！")) return;
+        const snap = await getDocs(query(collection(db, "incidents"), where("status", "==", "Archived")));
+        snap.forEach(d => deleteDoc(d.ref)); alert("歷史案件已清除。"); logAudit('admin', '清空歷史案件');
+    };
+
+    window.openEditCitizen = (id, name, dob, gender, address) => {
+        document.getElementById("adm-civ-id").value = id; document.getElementById("adm-civ-name").value = name;
+        document.getElementById("adm-civ-dob").value = dob; document.getElementById("adm-civ-gender").value = gender;
+        document.getElementById("adm-civ-addr").value = address; openModal('edit-citizen-modal');
+    };
+    window.saveEditedCitizen = async () => {
+        const id = document.getElementById("adm-civ-id").value;
+        await updateDoc(doc(db, "citizens", id), {
+            fullName: document.getElementById("adm-civ-name").value, dob: document.getElementById("adm-civ-dob").value,
+            gender: document.getElementById("adm-civ-gender").value, address: document.getElementById("adm-civ-addr").value
+        });
+        closeModal('edit-citizen-modal'); logAudit('admin', `強制編輯市民資料`);
+    };
+    window.deleteCitizen = async (id) => {
+        if(confirm("警告：即將永久刪除此市民檔案，確定？")) { await deleteDoc(doc(db, "citizens", id)); logAudit('admin', `刪除市民檔案`); }
+    };
+
+    window.filterAdminCitizens = () => {
+        const q = document.getElementById("adm-civ-search").value.toLowerCase();
+        let html = "";
+        allCitizensData.filter(c => c.name.toLowerCase().includes(q) || c.cid.toLowerCase().includes(q)).forEach(c => {
+            html += `<div class="list-item" style="flex-direction:row; align-items:center;">
+                        <div style="flex:1;"><strong>${c.name}</strong> <span class="badge" style="background:#444;">${c.cid}</span></div>
+                        <button class="btn-dark" style="padding:4px 8px; margin:0 5px;" onclick="openEditCitizen('${c.docId}','${c.name}','${c.dob}','${c.gender}','${c.addr}')">編輯</button>
+                        <button class="btn-danger" style="padding:4px 8px; margin:0;" onclick="deleteCitizen('${c.docId}')">刪除</button>
+                     </div>`;
+        });
+        document.getElementById("adm-citizens-board").innerHTML = html || "<div style='color:#888;'>查無結果。</div>";
+    };
+
     window.filterLogs = (cat) => {
         let html = "";
         auditLogsData.filter(log => cat === 'all' || log.category === cat).forEach(log => {
@@ -646,6 +753,7 @@
             if(log.category==='ems') badge = '<span class="badge badge-danger">醫護</span>';
             if(log.category==='citizen') badge = '<span class="badge" style="background:var(--civ-green)">市民</span>';
             if(log.category==='dispatch') badge = '<span class="badge" style="background:var(--disp-purple)">調度</span>';
+            if(log.category==='admin') badge = '<span class="badge" style="background:var(--warning); color:black;">管理</span>';
             html += `<tr><td>${log.time}</td><td>${badge}</td><td>${log.user}</td><td>${log.action}</td></tr>`;
         });
         document.getElementById("audit-table-body").innerHTML = html;
@@ -655,9 +763,22 @@
     // 🔄 全域即時連線監聽 (Live Sync)
     // ==========================================
     onSnapshot(query(collection(db, "penal_codes"), orderBy("name")), (snap) => {
-        penalCodes = []; let opt = "<option value=''>-- 選擇法條 --</option>";
-        snap.forEach(d => { penalCodes.push(d.data()); opt += `<option value="${d.data().name}">${d.data().name}</option>`; });
+        penalCodes = []; let opt = "<option value=''>-- 選擇法條 --</option>"; let admList = "";
+        snap.forEach(d => { 
+            penalCodes.push(d.data()); opt += `<option value="${d.data().name}">${d.data().name}</option>`;
+            admList += `<div class="list-item" style="flex-direction:row; justify-content:space-between; align-items:center; padding:10px;">
+                            <div><strong>${d.data().name}</strong> <span class="badge" style="background:var(--warning); color:black;">$${d.data().fine}</span></div>
+                            <button class="btn-danger" style="padding:4px 8px; margin:0;" onclick="deleteLaw('${d.id}')">刪除</button>
+                        </div>`;
+        });
         if(document.getElementById("ticket-law")) document.getElementById("ticket-law").innerHTML = opt;
+        if(document.getElementById("adm-laws-board")) document.getElementById("adm-laws-board").innerHTML = admList;
+    });
+
+    onSnapshot(collection(db, "citizens"), (snap) => {
+        allCitizensData = [];
+        snap.forEach(d => { let c = d.data(); allCitizensData.push({ docId: d.id, name: c.fullName, cid: c.citizenId, dob: c.dob, gender: c.gender, addr: c.address }); });
+        if(document.getElementById("adm-citizens-board")) filterAdminCitizens();
     });
 
     onSnapshot(collection(db, "units"), (snap) => {
@@ -680,8 +801,7 @@
         let dispActive = "", dispArchived = "", polCallHtml = "", emsCallHtml = "";
         
         snap.forEach(d => {
-            let inc = d.data(); let id = d.id;
-            let assigned = inc.assignedUnits || []; let primary = inc.primaryUnit || null;
+            let inc = d.data(); let id = d.id; let assigned = inc.assignedUnits || []; let primary = inc.primaryUnit || null;
             let timeStr = inc.timestamp ? inc.timestamp.toDate().toLocaleString() : "";
             
             let selHtml = `<select id="sel-${id}" style="width:120px; padding:6px; margin:0;"><option value="">選單位</option>`;
@@ -695,7 +815,7 @@
             let cardHtml = `<div class="list-item" style="flex-direction:column; align-items:flex-start; border-left-color:${inc.status==='Active'?pClass:'gray'}; ${inc.status!=='Active'?'cursor:pointer;':''}" ${inc.status!=='Active'?`onclick="viewHistory('${inc.title}', '${inc.location}', '${inc.desc}', '${timeStr}')"`:''}>
                                 <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:5px;">
                                     <strong style="color:white;">${inc.status==='Active'?`[P${inc.priority}] `:'[已結案] '}${inc.title}</strong>
-                                    <div>${inc.status === 'Active' ? `<button class="btn-dark" style="padding:4px 8px; margin:0;" onclick="openEditCallModal('${id}','${inc.title}','${inc.location}','${inc.desc}')">📝 編輯</button><button class="btn-danger" style="padding:4px 8px; margin:0 0 0 5px;" onclick="endCall('${id}')">✅ 結束</button>` : `<span class="badge">封存</span>`}</div>
+                                    <div>${inc.status === 'Active' ? `<button class="btn-dark" style="padding:4px 8px; margin:0;" onclick="openEditCallModal('${id}','${inc.title}','${inc.location}','${inc.desc}')">📝 編輯</button><button class="btn-danger" style="padding:4px 8px; margin:0 0 0 5px;" onclick="endCall('${id}')">✅ 結束案件</button>` : `<span class="badge">封存</span>`}</div>
                                 </div>
                                 <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:10px;">📍 ${inc.location} ${inc.status==='Active'?`| 📝 ${inc.desc}`:''}</div>
                                 ${inc.status === 'Active' ? `<div style="margin-bottom:10px;">${pTag} ${aTags}</div><div class="flex">${selHtml}</div>` : ''}
@@ -726,7 +846,7 @@
     onSnapshot(query(collection(db, "audit_logs"), orderBy("timestamp", "desc")), (snap) => {
         auditLogsData = [];
         snap.forEach(d => { let log = d.data(); let time = log.timestamp ? log.timestamp.toDate().toLocaleTimeString() : ""; auditLogsData.push({ time, category: log.category, user: log.user, action: log.action }); });
-        if(document.getElementById("audit-table-body")) filterLogs('all');
+        if(document.getElementById("audit-table-body")) document.getElementById("log-filter").dispatchEvent(new Event('change'));
     });
 
 </script>
