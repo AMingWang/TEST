@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SA-CAD | 終極實境版</title>
+    <title>SA-CAD | 完美實境版</title>
     <style>
         :root {
             --bg-dark: #09090b; --bg-panel: #18181b; --bg-card: #27272a; --bg-input: #1f1f22;
@@ -30,6 +30,7 @@
         /* 模態框 (Modal) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
         .modal-box { background: var(--bg-panel); padding: 25px; border-radius: 12px; border: 1px solid var(--border); width: 450px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .modal-box-large { width: 80%; height: 85vh; display: flex; flex-direction: column; }
         
         /* 登入與部門選擇閘道 */
         #auth-screen, #dept-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #09090b; z-index: 9000; display: flex; justify-content: center; align-items: center; flex-direction: column; }
@@ -39,7 +40,7 @@
 
         /* 主系統架構 */
         #app { display: none; width: 100%; height: 100%; }
-        .sidebar { width: 260px; background: var(--bg-panel); display: flex; flex-direction: column; border-right: 1px solid var(--border); }
+        .sidebar { width: 260px; background: var(--bg-panel); display: flex; flex-direction: column; border-right: 1px solid var(--border); z-index: 100;}
         .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); background: #000;}
         .user-info { padding: 15px; font-size: 0.9rem; color: var(--text-muted); border-bottom: 1px solid var(--border); }
         
@@ -97,6 +98,31 @@
     </div>
 </div>
 
+<div class="modal-overlay" id="history-modal">
+    <div class="modal-box">
+        <h3 style="margin-top:0; color:white;">📁 歷史案件詳情</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem;" id="hist-time"></p>
+        <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border); margin-bottom:15px;">
+            <strong style="color:white; font-size:1.1rem;" id="hist-title"></strong><br>
+            <span style="color:var(--text-muted);" id="hist-loc"></span>
+        </div>
+        <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border); color:white; min-height:80px;" id="hist-desc"></div>
+        <div class="flex" style="margin-top:15px;">
+            <button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('history-modal')">關閉</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="law-modal">
+    <div class="modal-box modal-box-large">
+        <div class="flex" style="justify-content:space-between; margin-bottom:10px;">
+            <h3 style="margin:0; color:white;">📖 伺服器專屬法典 (Amongst)</h3>
+            <button class="btn-danger" style="margin:0; padding:6px 12px;" onclick="closeModal('law-modal')">關閉視窗</button>
+        </div>
+        <iframe src="https://amingwang.github.io/Amongst/" style="width:100%; flex:1; border:none; border-radius:6px; background:white;"></iframe>
+    </div>
+</div>
+
 <div id="auth-screen">
     <div class="modal-box" style="text-align:center;">
         <h2 style="color:var(--pol-blue); margin-top:0;">SA-CAD 聯邦安全終端</h2>
@@ -133,7 +159,7 @@
             <input type="text" id="global-callsign" placeholder="例如: Adam-12" style="text-align:center; font-weight:bold;">
             <button class="btn-pol" id="duty-btn" style="width:100%; margin:0;" onclick="goOnDuty()">10-8 打卡上班</button>
         </div>
-        <button class="btn-dark" style="margin:auto 20px 20px 20px;" onclick="location.reload()">切換部門 / 系統登出</button>
+        <button class="btn-dark" style="margin:auto 20px 20px 20px;" onclick="systemLogout()">切換部門 / 自動下班登出</button>
     </div>
 
     <main class="main-content">
@@ -157,10 +183,10 @@
                     <div id="pol-my-call" style="color:var(--text-muted); overflow-y:auto; max-height:300px;">無分派勤務。</div>
                 </div>
                 <div class="card">
-                    <div class="card-header">🔍 NCIC 資料庫 (僅限身分證/資產碼)</div>
+                    <div class="card-header">🔍 NCIC 資料庫檢索</div>
                     <div class="flex">
-                        <select id="ncic-type" style="width:130px; margin:0;"><option value="citizen">👤 身分證號</option><option value="vehicle">🚗 車牌</option><option value="weapon">🔫 槍枝序號</option></select>
-                        <input type="text" id="ncic-query" placeholder="輸入精確字號..." style="margin:0;">
+                        <select id="ncic-type" style="width:140px; margin:0;"><option value="citizen">👤 姓名/身分證</option><option value="vehicle">🚗 車牌號碼</option><option value="weapon">🔫 槍枝序號</option></select>
+                        <input type="text" id="ncic-query" placeholder="精確輸入..." style="margin:0;">
                         <button class="btn-pol" style="margin:0; width:100px;" onclick="runNCIC()">檢索</button>
                     </div>
                     <div id="ncic-result" style="margin-top:15px; padding:15px; background:var(--bg-input); border-radius:6px; min-height:100px; color:var(--text-muted);">等待輸入查詢條件...</div>
@@ -168,7 +194,10 @@
             </div>
             <div class="grid-2" style="margin-top:20px;">
                 <div class="card">
-                    <div class="card-header">📝 開立罰單與前科</div>
+                    <div class="card-header">
+                        📝 開立罰單與前科
+                        <button class="btn-dark" style="margin:0; padding:4px 8px; font-size:0.85rem;" onclick="openModal('law-modal')">📖 查閱伺服器法規</button>
+                    </div>
                     <input type="text" id="ticket-id" placeholder="嫌疑人身分證號">
                     <select id="ticket-law"><option value="">載入法典中...</option></select>
                     <input type="number" id="ticket-fine" placeholder="罰款金額 (系統帶入)">
@@ -207,9 +236,12 @@
                     <div id="disp-calls-board" style="overflow-y:auto; flex:1;"></div>
                 </div>
 
-                <div class="card" style="max-height: 80vh;">
-                    <div class="card-header">📁 歷史案件 (Archived)</div>
-                    <div id="disp-history-board" style="overflow-y:auto; flex:1;"></div>
+                <div class="card" style="max-height: 80vh; display:flex; flex-direction:column;">
+                    <div class="card-header">🚓 執勤單位列表</div>
+                    <div id="disp-units-board" style="flex:1; overflow-y:auto; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;"></div>
+                    
+                    <div class="card-header" style="border:none; padding-bottom:5px;">📁 歷史案件庫</div>
+                    <div id="disp-history-board" style="flex:1; overflow-y:auto;"></div>
                 </div>
             </div>
         </div>
@@ -283,7 +315,10 @@
             <h2 style="margin-top:0; margin-bottom: 20px;">系統管理後台 (Root Admin)</h2>
             <div class="grid-2">
                 <div class="card" style="grid-column: span 2;">
-                    <div class="card-header">🛡️ 系統防弊稽核紀錄 (Audit Logs)</div>
+                    <div class="card-header">
+                        🛡️ 系統防弊稽核紀錄 (Audit Logs)
+                        <button class="btn-dark" style="margin:0; padding:4px 8px; font-size:0.85rem;" onclick="openModal('law-modal')">📖 查閱伺服器法規</button>
+                    </div>
                     <div class="flex" style="margin-bottom:10px;">
                         <button class="btn-dark" onclick="filterLogs('all')">全部</button>
                         <button class="btn-pol" onclick="filterLogs('police')">警察操作</button>
@@ -308,14 +343,14 @@
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, query, onSnapshot, orderBy, serverTimestamp, arrayUnion, arrayRemove, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // ⚠️ 貼上你的金鑰
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_AUTH_DOMAIN",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyD4po8muOv3Wzm8NSJxph5UXdmR4zdZZa4",
+        authDomain: "lspd-mdt-system.firebaseapp.com",
+        projectId: "lspd-mdt-system",
+        storageBucket: "lspd-mdt-system.firebasestorage.app",
+        messagingSenderId: "468749906657",
+        appId: "1:468749906657:web:5ad7ae50e50cec3792bda0",
+        measurementId: "G-PH2LHCLY79"
     };
 
     const app = initializeApp(firebaseConfig);
@@ -329,35 +364,40 @@
     let onlineUnits = [], penalCodes = [], auditLogsData = [];
 
     // ==========================================
-    // 系統底層 (UI, Modal, Clock, Audio)
+    // 系統底層 (UI, Modal, Clock)
     // ==========================================
     setInterval(() => { document.getElementById("sys-time").innerText = new Date().toLocaleTimeString('en-US', { hour12: false }); }, 1000);
     window.openModal = (id) => { document.getElementById(id).style.display = 'flex'; };
     window.closeModal = (id) => { document.getElementById(id).style.display = 'none'; };
 
-    // 稽核日誌寫入器
     const logAudit = async (category, action) => {
         const userName = currentDept === 'citizen' ? (activeCitizenName || currentUser.email) : (document.getElementById("global-callsign").value || currentUser.email);
         await addDoc(collection(db, "audit_logs"), { category, user: userName, action, timestamp: serverTimestamp() });
     };
 
     // ==========================================
-    // Auth & 登入
+    // Auth & 自動下班登出邏輯
     // ==========================================
     window.signInWithGoogle = () => { signInWithPopup(auth, googleProvider).catch(e => alert("登入失敗: " + e.message)); };
-    window.logOut = () => { signOut(auth); location.reload(); };
+    
+    // 強制下班並重新整理
+    window.systemLogout = async () => {
+        if(myUnitId) await updateDoc(doc(db, "units", myUnitId), { status: "10-7 (下班/登出)" });
+        location.reload();
+    };
+
+    window.logOut = async () => {
+        if(myUnitId) await updateDoc(doc(db, "units", myUnitId), { status: "10-7 (下班/登出)" });
+        signOut(auth); location.reload();
+    };
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
             currentUser = user;
-            document.getElementById("auth-screen").style.display = "none";
-            document.getElementById("dept-screen").style.display = "flex";
-            document.getElementById("auth-user-email").innerText = user.email;
-            document.getElementById("sb-email").innerText = user.email.split('@')[0];
+            document.getElementById("auth-screen").style.display = "none"; document.getElementById("dept-screen").style.display = "flex";
+            document.getElementById("auth-user-email").innerText = user.email; document.getElementById("sb-email").innerText = user.email.split('@')[0];
         } else {
-            document.getElementById("auth-screen").style.display = "flex";
-            document.getElementById("dept-screen").style.display = "none";
-            document.getElementById("app").style.display = "none";
+            document.getElementById("auth-screen").style.display = "flex"; document.getElementById("dept-screen").style.display = "none"; document.getElementById("app").style.display = "none";
         }
     });
 
@@ -370,7 +410,6 @@
     window.verifyPin = (bypass = false) => {
         const pin = document.getElementById("pin-input").value;
         if (!bypass && pin !== DEPT_KEYS[targetDept]) return alert("❌ 金鑰錯誤！");
-        
         closeModal('pin-modal'); currentDept = targetDept;
         document.getElementById("dept-screen").style.display = "none"; document.getElementById("app").style.display = "flex";
         
@@ -398,7 +437,6 @@
         document.getElementById("duty-btn").innerText = "已上線"; document.getElementById("duty-btn").disabled = true;
         if(currentDept === 'police') document.getElementById("pol-status-row").style.cssText = "opacity:1; pointer-events:auto;";
         if(currentDept === 'ems') document.getElementById("ems-status-row").style.cssText = "opacity:1; pointer-events:auto;";
-        
         logAudit(currentDept, `單位上線打卡 (10-8)`);
     };
 
@@ -420,16 +458,25 @@
 
     window.runNCIC = async () => {
         const type = document.getElementById("ncic-type").value;
-        const qVal = document.getElementById("ncic-query").value.toUpperCase();
+        const rawQuery = document.getElementById("ncic-query").value.trim();
+        const qVal = rawQuery.toUpperCase();
         const resBox = document.getElementById("ncic-result");
-        if(!qVal) return; resBox.innerHTML = "資料庫檢索中...";
+        if(!rawQuery) return; resBox.innerHTML = "聯邦資料庫檢索中...";
 
         try {
             if(type === 'citizen') {
-                // 限制只能查 ID
-                const snap = await getDocs(query(collection(db, "citizens"), where("citizenId", "==", qVal)));
-                if(!snap.empty) {
-                    const data = snap.docs[0].data();
+                let cDoc = null;
+                // 先查身分證 (大寫)
+                const qId = await getDocs(query(collection(db, "citizens"), where("citizenId", "==", qVal)));
+                if (!qId.empty) cDoc = qId.docs[0];
+                else {
+                    // 再查姓名 (區分大小寫的精確匹配)
+                    const qName = await getDocs(query(collection(db, "citizens"), where("fullName", "==", rawQuery)));
+                    if (!qName.empty) cDoc = qName.docs[0];
+                }
+                
+                if(cDoc) {
+                    const data = cDoc.data();
                     const wSnap = await getDocs(query(collection(db, "warrants"), where("citizenId", "==", data.citizenId)));
                     let wText = wSnap.empty ? "<span class='badge' style='background:var(--civ-green);'>無通緝</span>" : `<span class='badge badge-danger'>⚠️ 通緝中: ${wSnap.docs[0].data().reason}</span>`;
                     
@@ -437,7 +484,7 @@
                         <strong>身分證:</strong> ${data.citizenId}<br><strong>姓名:</strong> ${data.fullName}<br>
                         <strong>生日:</strong> ${data.dob} | <strong>性別:</strong> ${data.gender}<br>
                         <strong>住址:</strong> ${data.address}<br><strong>狀態:</strong> ${wText}`;
-                } else resBox.innerHTML = "<span style='color:var(--danger)'>查無此身分證字號。</span>";
+                } else resBox.innerHTML = "<span style='color:var(--danger)'>查無此身分證或姓名。</span>";
             } else {
                 const snap = await getDocs(query(collection(db, "assets"), where("type", "==", type==='vehicle'?'車輛':'槍枝'), where("detail", "==", qVal)));
                 if(!snap.empty) {
@@ -446,7 +493,7 @@
                         <strong>登記碼:</strong> ${data.detail}<br><strong>所有人:</strong> ${data.ownerName} (${data.citizenId})<br><span style='color:var(--civ-green)'>合法登記</span>`;
                 } else resBox.innerHTML = "<span style='color:var(--warning)'>查無登記，疑似黑市物品。</span>";
             }
-            logAudit('police', `執行 NCIC 查詢: ${qVal}`);
+            logAudit('police', `執行 NCIC 查詢: ${rawQuery}`);
         } catch(e) { resBox.innerHTML = "錯誤。"; }
     };
 
@@ -459,26 +506,22 @@
         const cid = document.getElementById("ticket-id").value; const reason = document.getElementById("ticket-law").value; const fine = document.getElementById("ticket-fine").value;
         if(!cid || !reason) return;
         await addDoc(collection(db, "tickets"), { citizenId: cid, reason, fine: Number(fine), timestamp: serverTimestamp() });
-        alert("✅ 罰單已寫入前科庫！");
-        logAudit('police', `對 ${cid} 開立罰單: ${reason}`);
+        alert("✅ 罰單已寫入前科庫！"); logAudit('police', `對 ${cid} 開立罰單: ${reason}`);
     };
 
     window.issueWarrant = async () => {
         const cid = document.getElementById("warrant-id").value; const reason = document.getElementById("warrant-reason").value;
         if(!cid) return;
         await addDoc(collection(db, "warrants"), { citizenId: cid, reason, timestamp: serverTimestamp() });
-        alert("✅ 全國通緝令發布！");
-        logAudit('police', `對 ${cid} 發布通緝: ${reason}`);
+        alert("✅ 全國通緝令發布！"); logAudit('police', `對 ${cid} 發布通緝: ${reason}`);
     };
 
     // ==========================================
     // 調度 (Dispatch)
     // ==========================================
     window.createCall = async () => {
-        const priority = document.getElementById("disp-priority").value;
-        const title = document.getElementById("disp-title").value;
-        const loc = document.getElementById("disp-loc").value;
-        const desc = document.getElementById("disp-desc").value;
+        const priority = document.getElementById("disp-priority").value; const title = document.getElementById("disp-title").value;
+        const loc = document.getElementById("disp-loc").value; const desc = document.getElementById("disp-desc").value;
         if(!title || !loc) return alert("標題與地點必填！");
         await addDoc(collection(db, "incidents"), { priority, title, location: loc, desc, primaryUnit: null, assignedUnits: [], status: "Active", timestamp: serverTimestamp() });
         document.getElementById("disp-title").value = ""; document.getElementById("disp-loc").value = ""; document.getElementById("disp-desc").value = "";
@@ -486,16 +529,9 @@
     };
 
     window.setPrimaryUnit = async (incId, unitId) => {
-        if(!unitId) return;
-        await updateDoc(doc(db, "incidents", incId), { primaryUnit: unitId });
-        logAudit('dispatch', `設定案件主響應單位`);
+        if(unitId) { await updateDoc(doc(db, "incidents", incId), { primaryUnit: unitId }); logAudit('dispatch', `設定案件主響應單位`); }
     };
-
-    window.addAssistUnit = async (incId, unitId) => {
-        if(!unitId) return;
-        await updateDoc(doc(db, "incidents", incId), { assignedUnits: arrayUnion(unitId) });
-    };
-
+    window.addAssistUnit = async (incId, unitId) => { if(unitId) await updateDoc(doc(db, "incidents", incId), { assignedUnits: arrayUnion(unitId) }); };
     window.unassignUnit = async (incId, unitId, isPrimary) => {
         if(isPrimary) await updateDoc(doc(db, "incidents", incId), { primaryUnit: null });
         else await updateDoc(doc(db, "incidents", incId), { assignedUnits: arrayRemove(unitId) });
@@ -509,24 +545,27 @@
 
     window.saveEditedCall = async () => {
         const id = document.getElementById("edit-call-id").value;
-        await updateDoc(doc(db, "incidents", id), {
-            title: document.getElementById("edit-call-title").value, location: document.getElementById("edit-call-loc").value, desc: document.getElementById("edit-call-desc").value
-        });
-        closeModal('edit-call-modal'); logAudit('dispatch', `編輯案件資訊`);
+        await updateDoc(doc(db, "incidents", id), { title: document.getElementById("edit-call-title").value, location: document.getElementById("edit-call-loc").value, desc: document.getElementById("edit-call-desc").value });
+        closeModal('edit-call-modal'); logAudit(currentDept, `編輯案件資訊`);
     };
 
     window.endCall = async (incId) => {
         if(confirm("確定結束此案件？將轉入歷史區。")) {
-            await updateDoc(doc(db, "incidents", incId), { status: "Archived" });
-            logAudit(currentDept, `結束案件並歸檔`);
+            await updateDoc(doc(db, "incidents", incId), { status: "Archived" }); logAudit(currentDept, `結束案件並歸檔`);
         }
     };
 
     window.forceAllOffline = async () => {
         if(!confirm("確定強制所有單位下班？")) return;
         const snap = await getDocs(collection(db, "units"));
-        snap.forEach(d => { if(!d.data().status.includes('10-7')) updateDoc(d.ref, { status: "10-7 (調度強制下線)" }); });
+        snap.forEach(d => { if(!d.data().status.includes('10-7')) updateDoc(d.ref, { status: "10-7 (調度強制下班)" }); });
         logAudit('dispatch', `強制所有警員下線`);
+    };
+
+    window.viewHistory = (title, loc, desc, time) => {
+        document.getElementById("hist-title").innerText = title; document.getElementById("hist-loc").innerText = "📍 " + loc;
+        document.getElementById("hist-desc").innerText = desc; document.getElementById("hist-time").innerText = "建檔時間: " + time;
+        openModal('history-modal');
     };
 
     // ==========================================
@@ -541,15 +580,11 @@
     // 市民 (Citizen)
     // ==========================================
     window.createCharacter = async () => {
-        const last = document.getElementById("civ-last").value.trim();
-        const first = document.getElementById("civ-first").value.trim();
-        const dob = document.getElementById("civ-dob").value;
-        const gender = document.getElementById("civ-gender").value;
-        const address = document.getElementById("civ-addr").value;
+        const last = document.getElementById("civ-last").value.trim(); const first = document.getElementById("civ-first").value.trim();
+        const dob = document.getElementById("civ-dob").value; const gender = document.getElementById("civ-gender").value; const address = document.getElementById("civ-addr").value;
         if(!last || !first || !dob) return alert("資料不完整");
         
-        const fullName = `${last} ${first}`;
-        const citizenId = "CIT-" + Math.floor(1000 + Math.random() * 9000);
+        const fullName = `${last} ${first}`; const citizenId = "CIT-" + Math.floor(1000 + Math.random() * 9000);
         await addDoc(collection(db, "citizens"), { userId: currentUser.uid, fullName, dob, gender, address, citizenId, timestamp: serverTimestamp() });
         logAudit('citizen', `建立新市民角色: ${fullName}`);
     };
@@ -601,13 +636,8 @@
     };
 
     // ==========================================
-    // ⚙️ 管理員 & 稽核日誌
+    // ⚙️ 稽核日誌
     // ==========================================
-    window.addLaw = async () => {
-        const n = document.getElementById("adm-law-name").value; const f = document.getElementById("adm-law-fine").value;
-        if(n) { await addDoc(collection(db, "penal_codes"), { name: n, fine: Number(f) }); document.getElementById("adm-law-name").value = ""; }
-    };
-
     window.filterLogs = (cat) => {
         let html = "";
         auditLogsData.filter(log => cat === 'all' || log.category === cat).forEach(log => {
@@ -624,102 +654,78 @@
     // ==========================================
     // 🔄 全域即時連線監聽 (Live Sync)
     // ==========================================
-    
-    // 1. 監聽法典
     onSnapshot(query(collection(db, "penal_codes"), orderBy("name")), (snap) => {
         penalCodes = []; let opt = "<option value=''>-- 選擇法條 --</option>";
         snap.forEach(d => { penalCodes.push(d.data()); opt += `<option value="${d.data().name}">${d.data().name}</option>`; });
         if(document.getElementById("ticket-law")) document.getElementById("ticket-law").innerHTML = opt;
     });
 
-    // 2. 監聽線上單位
     onSnapshot(collection(db, "units"), (snap) => {
-        onlineUnits = [];
-        snap.forEach(d => { if(!d.data().status.includes('10-7')) onlineUnits.push({id: d.id, ...d.data()}); });
+        onlineUnits = []; let html = "";
+        snap.forEach(d => {
+            let u = d.data();
+            if(!u.status.includes('10-7')) {
+                onlineUnits.push({id: d.id, ...u});
+                let bColor = u.dept === 'LSFD' ? 'var(--ems-red)' : 'var(--pol-blue)';
+                html += `<div class="list-item" style="border-left-color:${bColor};">
+                            <div class="flex"><span class="badge" style="background:${bColor};">${u.dept}</span><strong style="color:white;">${u.name}</strong></div>
+                            <span style="font-size:0.85rem; color:var(--text-muted);">${u.status}</span>
+                         </div>`;
+            }
+        });
+        if(document.getElementById("disp-units-board")) document.getElementById("disp-units-board").innerHTML = html || "<div style='color:var(--text-muted);'>無線上單位。</div>";
     });
 
-    // 3. 監聽案件 (分 Active 與 Archived)
     onSnapshot(query(collection(db, "incidents"), orderBy("timestamp", "desc")), (snap) => {
         let dispActive = "", dispArchived = "", polCallHtml = "", emsCallHtml = "";
         
         snap.forEach(d => {
             let inc = d.data(); let id = d.id;
-            let assigned = inc.assignedUnits || [];
-            let primary = inc.primaryUnit || null;
+            let assigned = inc.assignedUnits || []; let primary = inc.primaryUnit || null;
+            let timeStr = inc.timestamp ? inc.timestamp.toDate().toLocaleString() : "";
             
-            // 下拉選單 UI
             let selHtml = `<select id="sel-${id}" style="width:120px; padding:6px; margin:0;"><option value="">選單位</option>`;
             onlineUnits.forEach(u => { if(u.id !== primary && !assigned.includes(u.id)) selHtml += `<option value="${u.id}">${u.name}</option>`; });
-            selHtml += `</select>
-                        <button class="btn-dark" style="padding:6px; margin:0 2px;" onclick="setPrimaryUnit('${id}', document.getElementById('sel-${id}').value)">設為主響應</button>
-                        <button class="btn-pol" style="padding:6px; margin:0;" onclick="addAssistUnit('${id}', document.getElementById('sel-${id}').value)">加入支援</button>`;
+            selHtml += `</select><button class="btn-dark" style="padding:6px; margin:0 2px;" onclick="setPrimaryUnit('${id}', document.getElementById('sel-${id}').value)">主響應</button><button class="btn-pol" style="padding:6px; margin:0;" onclick="addAssistUnit('${id}', document.getElementById('sel-${id}').value)">加入支援</button>`;
             
-            // 單位標籤
             let pTag = primary ? `<span class="badge" style="background:var(--warning); color:black; margin-bottom:5px; display:inline-block;">👑 主響應: ${onlineUnits.find(u=>u.id===primary)?.name||'未知'} <span style="cursor:pointer; color:red;" onclick="unassignUnit('${id}','${primary}', true)">✖</span></span>` : '';
             let aTags = assigned.map(uid => `<span class="badge" style="background:var(--pol-blue); margin-bottom:5px; display:inline-block;">支援: ${onlineUnits.find(u=>u.id===uid)?.name||'未知'} <span style="cursor:pointer; color:var(--danger);" onclick="unassignUnit('${id}','${uid}', false)">✖</span></span>`).join(" ");
-
             let pClass = inc.priority === "1" ? "var(--danger)" : (inc.priority === "2" ? "var(--warning)" : "var(--pol-blue)");
 
-            // 案件卡片 HTML
-            let cardHtml = `<div class="list-item" style="flex-direction:column; align-items:flex-start; border-left-color:${pClass};">
+            let cardHtml = `<div class="list-item" style="flex-direction:column; align-items:flex-start; border-left-color:${inc.status==='Active'?pClass:'gray'}; ${inc.status!=='Active'?'cursor:pointer;':''}" ${inc.status!=='Active'?`onclick="viewHistory('${inc.title}', '${inc.location}', '${inc.desc}', '${timeStr}')"`:''}>
                                 <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:5px;">
-                                    <strong style="color:white;">[P${inc.priority}] ${inc.title}</strong>
-                                    <div>
-                                        ${inc.status === 'Active' ? `<button class="btn-dark" style="padding:4px 8px; margin:0;" onclick="openEditCallModal('${id}','${inc.title}','${inc.location}','${inc.desc}')">📝 編輯</button>
-                                        <button class="btn-danger" style="padding:4px 8px; margin:0 0 0 5px;" onclick="endCall('${id}')">✅ 結束案件</button>` : `<span class="badge">已結案</span>`}
-                                    </div>
+                                    <strong style="color:white;">${inc.status==='Active'?`[P${inc.priority}] `:'[已結案] '}${inc.title}</strong>
+                                    <div>${inc.status === 'Active' ? `<button class="btn-dark" style="padding:4px 8px; margin:0;" onclick="openEditCallModal('${id}','${inc.title}','${inc.location}','${inc.desc}')">📝 編輯</button><button class="btn-danger" style="padding:4px 8px; margin:0 0 0 5px;" onclick="endCall('${id}')">✅ 結束</button>` : `<span class="badge">封存</span>`}</div>
                                 </div>
-                                <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:10px;">📍 ${inc.location} | 📝 ${inc.desc}</div>
-                                <div style="margin-bottom:10px;">${pTag} ${aTags}</div>
-                                ${inc.status === 'Active' ? `<div class="flex">${selHtml}</div>` : ''}
+                                <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:10px;">📍 ${inc.location} ${inc.status==='Active'?`| 📝 ${inc.desc}`:''}</div>
+                                ${inc.status === 'Active' ? `<div style="margin-bottom:10px;">${pTag} ${aTags}</div><div class="flex">${selHtml}</div>` : ''}
                             </div>`;
 
             if(inc.status === 'Active') dispActive += cardHtml; else dispArchived += cardHtml;
 
-            // 警消 MDT 卡片
             if(inc.status === 'Active' && ((myUnitId && myUnitId === primary) || (myUnitId && assigned.includes(myUnitId)))) {
                 let myHtml = `<div class="list-item" style="flex-direction:column; align-items:flex-start; border-left-color:${pClass};">
-                                <div style="width:100%; display:flex; justify-content:space-between;">
+                                <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
                                     <strong style="color:white; font-size:1.1rem;">🚨 ${inc.title}</strong>
-                                    <button class="btn-danger" style="padding:6px 12px; margin:0;" onclick="endCall('${id}')">✅ 回報結案</button>
+                                    <div><button class="btn-dark" style="padding:6px 12px; margin:0 5px 0 0;" onclick="openEditCallModal('${id}','${inc.title}','${inc.location}','${inc.desc}')">📝 編輯</button><button class="btn-danger" style="padding:6px 12px; margin:0;" onclick="endCall('${id}')">✅ 結案</button></div>
                                 </div>
-                                <div style="margin:8px 0; color:white;">📍 ${inc.location}</div>
-                                <div style="color:var(--text-muted); font-size:0.95rem;">📝 ${inc.desc}</div>
-                                <div style="margin-top:10px; width:100%;">現場單位：<br>${pTag} ${aTags}</div>
+                                <div style="margin:8px 0; color:white;">📍 ${inc.location}</div><div style="color:var(--text-muted); font-size:0.95rem; line-height:1.5;">📝 ${inc.desc}</div>
+                                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border); width:100%;">現場單位：${pTag} ${aTags}</div>
                                </div>`;
                 if(currentDept === 'police') polCallHtml += myHtml;
                 if(currentDept === 'ems') emsCallHtml += myHtml;
             }
         });
         
-        if(document.getElementById("disp-calls-board")) document.getElementById("disp-calls-board").innerHTML = dispActive || "<div style='color:#888'>目前無進行中案件。</div>";
+        if(document.getElementById("disp-calls-board")) document.getElementById("disp-calls-board").innerHTML = dispActive || "<div style='color:#888'>目前無案件。</div>";
         if(document.getElementById("disp-history-board")) document.getElementById("disp-history-board").innerHTML = dispArchived || "<div style='color:#888'>無歷史案件。</div>";
-        if(document.getElementById("pol-my-call")) document.getElementById("pol-my-call").innerHTML = polCallHtml || "<div style='color:#888'>目前無分派勤務。</div>";
-        if(document.getElementById("ems-my-call")) document.getElementById("ems-my-call").innerHTML = emsCallHtml || "<div style='color:#888'>目前無分派勤務。</div>";
+        if(document.getElementById("pol-my-call")) document.getElementById("pol-my-call").innerHTML = polCallHtml || "<div style='color:#888'>無分派勤務。</div>";
+        if(document.getElementById("ems-my-call")) document.getElementById("ems-my-call").innerHTML = emsCallHtml || "<div style='color:#888'>無分派勤務。</div>";
     });
 
-    // 4. 監聽 10-99 警報
-    let initPanic = true;
-    onSnapshot(query(collection(db, "emergency"), orderBy("timestamp", "desc")), (snap) => {
-        if(initPanic) { initPanic = false; return; }
-        if(!snap.empty) {
-            const data = snap.docs[0].data();
-            if(Date.now() - data.timestamp?.toDate() < 5000) {
-                document.getElementById("panic-caller").innerText = data.caller;
-                document.getElementById("bolo-banner").style.display = "block";
-                setTimeout(() => { document.getElementById("bolo-banner").style.display = "none"; }, 6000);
-            }
-        }
-    });
-
-    // 5. 監聽稽核日誌
     onSnapshot(query(collection(db, "audit_logs"), orderBy("timestamp", "desc")), (snap) => {
         auditLogsData = [];
-        snap.forEach(d => {
-            let log = d.data();
-            let time = log.timestamp ? log.timestamp.toDate().toLocaleTimeString() : "";
-            auditLogsData.push({ time, category: log.category, user: log.user, action: log.action });
-        });
+        snap.forEach(d => { let log = d.data(); let time = log.timestamp ? log.timestamp.toDate().toLocaleTimeString() : ""; auditLogsData.push({ time, category: log.category, user: log.user, action: log.action }); });
         if(document.getElementById("audit-table-body")) filterLogs('all');
     });
 
