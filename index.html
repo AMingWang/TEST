@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SA-CAD | 頂級實境版 v13</title>
+    <title>SA-CAD | 頂級實境版 v13.1</title>
     <style>
         /* 現代化色板 (Zinc/Tailwind 風格) */
         :root {
@@ -90,11 +90,11 @@
         .char-card:hover { background: var(--bg-input); transform: translateY(-2px); }
         .char-card.active { border-color: var(--civ-green); background: rgba(34, 197, 94, 0.1); box-shadow: 0 0 0 1px var(--civ-green); }
         
-        /* 稽核日誌表格 */
-        .log-table-container { flex: 1; overflow-y: auto; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; }
-        .log-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        .log-table th { position: sticky; top: 0; background: #27272a; padding: 12px; text-align: left; color: var(--text-main); font-weight: 600; z-index: 10; border-bottom: 2px solid var(--border); }
-        .log-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        /* 稽核日誌表格排版優化 */
+        .log-table-container { flex: 1; overflow-y: auto; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; min-height: 400px; }
+        .log-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; table-layout: fixed; }
+        .log-table th { position: sticky; top: 0; background: #27272a; padding: 14px 12px; text-align: left; color: white; font-weight: 700; z-index: 10; border-bottom: 2px solid var(--border); letter-spacing: 1px;}
+        .log-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); word-wrap: break-word; }
         .log-table tr:hover td { background: rgba(255,255,255,0.03); }
     </style>
 </head>
@@ -404,16 +404,27 @@
                     <div id="adm-citizens-board" style="overflow-y:auto; max-height: 500px; padding-top:10px;"></div>
                 </div>
 
-                <div class="card">
+                <div class="card" style="display:flex; flex-direction:column;">
                     <div class="card-header">🛡️ 系統防弊稽核紀錄</div>
-                    <select id="log-filter" onchange="filterLogs(this.value)" style="background:var(--bg-panel);">
+                    <select id="log-filter" onchange="filterLogs(this.value)" style="background:var(--bg-panel); margin-bottom: 15px;">
                         <option value="all">顯示全部紀錄</option>
                         <option value="police">🚓 警察操作</option>
                         <option value="dispatch">📡 調度操作</option>
                         <option value="citizen">👤 市民操作</option>
+                        <option value="admin">⚙️ 管理操作</option>
                     </select>
                     <div class="log-table-container">
-                        <table class="log-table"><tbody id="audit-table-body"></tbody></table>
+                        <table class="log-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 22%; white-space: nowrap;">時間</th>
+                                    <th style="width: 15%; white-space: nowrap;">部門</th>
+                                    <th style="width: 25%; white-space: nowrap;">操作人員</th>
+                                    <th style="width: 38%;">動作內容</th>
+                                </tr>
+                            </thead>
+                            <tbody id="audit-table-body"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -426,7 +437,7 @@
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, query, onSnapshot, orderBy, serverTimestamp, arrayUnion, arrayRemove, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // 🔑 在這裡已經寫入你的專屬金鑰
+    // 🔑 你的專屬 Firebase 真實金鑰
     const firebaseConfig = {
         apiKey: "AIzaSyD4po8muOv3Wzm8NSJxph5UXdmR4zdZZa4",
         authDomain: "lspd-mdt-system.firebaseapp.com",
@@ -455,7 +466,7 @@
     window.closeModal = (id) => { document.getElementById(id).style.display = 'none'; };
 
     const logAudit = async (category, action) => {
-        const userName = currentDept === 'citizen' ? (activeCitizenName || currentUser.email) : (document.getElementById("global-callsign").value || currentUser.email);
+        const userName = currentDept === 'citizen' ? (activeCitizenName || currentUser.email) : (document.getElementById("global-callsign")?.value || currentUser.email);
         await addDoc(collection(db, "audit_logs"), { category, user: userName, action, timestamp: serverTimestamp() });
     };
 
