@@ -3,76 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SA-CAD | 終極上帝版 v12</title>
+    <title>SA-CAD | 頂級實境版 v13</title>
     <style>
+        /* 現代化色板 (Zinc/Tailwind 風格) */
         :root {
-            --bg-dark: #09090b; --bg-panel: #18181b; --bg-card: #27272a; --bg-input: #1f1f22;
-            --text-main: #f4f4f5; --text-muted: #a1a1aa; --border: #3f3f46;
-            --pol-blue: #3b82f6; --ems-red: #ef4444; --disp-purple: #a855f7; --civ-green: #22c55e;
-            --danger: #ef4444; --warning: #eab308;
+            --bg-dark: #09090b;
+            --bg-panel: #18181b;
+            --bg-card: #27272a;
+            --bg-input: #3f3f46;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --border: #3f3f46;
+            --pol-blue: #3b82f6;
+            --ems-red: #ef4444;
+            --disp-purple: #a855f7;
+            --civ-green: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
         }
 
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg-dark); color: var(--text-main); margin: 0; height: 100vh; display: flex; overflow: hidden; }
-        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: var(--bg-dark); color: var(--text-main); margin: 0; height: 100vh; display: flex; overflow: hidden; letter-spacing: 0.3px; }
+        ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-thumb { background: #52525b; border-radius: 10px; } ::-webkit-scrollbar-thumb:hover { background: #71717a; }
         
-        input, select, textarea { width: 100%; padding: 10px; background: var(--bg-input); border: 1px solid var(--border); color: white; border-radius: 6px; box-sizing: border-box; margin-bottom: 12px; outline: none; }
-        input:focus, select:focus, textarea:focus { border-color: var(--pol-blue); }
-        button { padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; color: white; transition: 0.2s; margin-bottom: 12px; }
-        button:hover { filter: brightness(1.15); }
-        .btn-pol { background: var(--pol-blue); } .btn-ems { background: var(--ems-red); }
-        .btn-disp { background: var(--disp-purple); } .btn-civ { background: var(--civ-green); }
-        .btn-danger { background: var(--danger); } .btn-dark { background: #3f3f46; }
+        /* 基礎輸入元件優化 */
+        input, select, textarea { width: 100%; padding: 12px 15px; background: var(--bg-input); border: 1px solid transparent; color: white; border-radius: 8px; box-sizing: border-box; margin-bottom: 12px; outline: none; transition: all 0.3s ease; font-family: inherit; font-size: 0.95rem; }
+        input:focus, select:focus, textarea:focus { border: 1px solid var(--pol-blue); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); }
+        
+        /* 按鈕美化 */
+        button { padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; color: white; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); margin-bottom: 12px; font-size: 0.95rem; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        button:hover { transform: translateY(-2px); filter: brightness(1.15); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        button:active { transform: translateY(0); box-shadow: none; }
+        .btn-pol { background: linear-gradient(135deg, #2563eb, #3b82f6); } 
+        .btn-ems { background: linear-gradient(135deg, #dc2626, #ef4444); }
+        .btn-disp { background: linear-gradient(135deg, #9333ea, #a855f7); } 
+        .btn-civ { background: linear-gradient(135deg, #16a34a, #22c55e); }
+        .btn-danger { background: linear-gradient(135deg, #b91c1c, #ef4444); } 
+        .btn-warning { background: linear-gradient(135deg, #d97706, #f59e0b); color: white !important;}
+        .btn-dark { background: #3f3f46; border: 1px solid #52525b; }
 
-        .flex { display: flex; gap: 10px; align-items: center; } .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } .grid-3 { display: grid; grid-template-columns: 320px 1fr 300px; gap: 20px; }
-        .card { background: var(--bg-card); padding: 20px; border-radius: 8px; border: 1px solid var(--border); display: flex; flex-direction: column;}
-        .card-header { font-size: 1.15rem; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 15px; color: white; display: flex; justify-content: space-between; align-items: center;}
+        /* 排版與卡片提升 */
+        .flex { display: flex; gap: 12px; align-items: center; } 
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; } 
+        .grid-3 { display: grid; grid-template-columns: 320px 1fr 320px; gap: 24px; }
+        
+        .card { background: var(--bg-card); padding: 24px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3); display: flex; flex-direction: column; transition: transform 0.2s; }
+        .card:hover { border-color: #52525b; }
+        .card-header { font-size: 1.2rem; font-weight: 700; border-bottom: 2px solid var(--border); padding-bottom: 12px; margin-bottom: 18px; color: white; display: flex; justify-content: space-between; align-items: center; letter-spacing: 0.5px;}
 
-        /* 模態框 (Modal) */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.8); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
-        .modal-box { background: var(--bg-panel); padding: 25px; border-radius: 12px; border: 1px solid var(--border); width: 450px; max-height: 90vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        .modal-box-large { width: 80%; height: 85vh; display: flex; flex-direction: column; }
+        /* 毛玻璃模態框 (Glassmorphism Modal) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.6); z-index: 9999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .modal-box { background: rgba(24, 24, 27, 0.95); padding: 30px; border-radius: 16px; border: 1px solid #52525b; width: 450px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+        .modal-box-large { width: 85%; height: 85vh; display: flex; flex-direction: column; }
         
         /* 登入閘道 */
-        #auth-screen, #dept-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #09090b; z-index: 9000; display: flex; justify-content: center; align-items: center; flex-direction: column; }
-        .dept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; max-width: 600px; margin-top: 20px; }
-        .dept-btn { padding: 25px; font-size: 1.1rem; border-radius: 8px; border: 2px solid var(--border); background: var(--bg-card); transition: 0.3s; }
-        .dept-btn:hover { transform: translateY(-3px); border-color: white; }
+        #auth-screen, #dept-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at center, #18181b 0%, #09090b 100%); z-index: 9000; display: flex; justify-content: center; align-items: center; flex-direction: column; }
+        .dept-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 650px; margin-top: 30px; }
+        .dept-btn { padding: 30px; font-size: 1.15rem; border-radius: 12px; border: 2px solid var(--border); background: var(--bg-card); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        .dept-btn:hover { transform: translateY(-5px); border-color: white; box-shadow: 0 15px 20px rgba(0,0,0,0.4); }
 
-        /* 系統架構 */
+        /* 系統側邊欄 */
         #app { display: none; width: 100%; height: 100%; }
-        .sidebar { width: 260px; background: var(--bg-panel); display: flex; flex-direction: column; border-right: 1px solid var(--border); z-index: 100;}
-        .sidebar-header { padding: 20px; text-align: center; border-bottom: 1px solid var(--border); background: #000;}
-        .user-info { padding: 15px; font-size: 0.9rem; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        .sidebar { width: 280px; background: rgba(24, 24, 27, 0.95); display: flex; flex-direction: column; border-right: 1px solid var(--border); z-index: 100; backdrop-filter: blur(10px);}
+        .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid var(--border); background: linear-gradient(180deg, #111 0%, #18181b 100%);}
+        .user-info { padding: 18px; font-size: 0.95rem; color: var(--text-muted); border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.02); }
         
-        .main-content { flex: 1; overflow-y: auto; padding: 20px; position: relative; }
-        .dept-view { display: none; } .dept-view.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .main-content { flex: 1; overflow-y: auto; padding: 25px 30px; position: relative; background: var(--bg-dark); }
+        .dept-view { display: none; } .dept-view.active { display: block; animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        .status-row { display: flex; gap: 8px; margin-bottom: 20px; }
-        .status-btn { flex: 1; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-muted); margin: 0; font-size: 0.9rem; }
-        .status-btn.active { background: var(--pol-blue); color: white; border-color: var(--pol-blue); }
+        /* 狀態列 */
+        .status-row { display: flex; gap: 10px; margin-bottom: 25px; }
+        .status-btn { flex: 1; background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-muted); margin: 0; font-size: 0.95rem; font-weight: 500;}
+        .status-btn:hover { background: var(--bg-input); }
+        .status-btn.active { background: var(--pol-blue); color: white; border-color: var(--pol-blue); box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
 
-        .list-item { background: var(--bg-input); padding: 15px; margin-bottom: 10px; border-radius: 6px; border-left: 4px solid var(--border); display: flex; flex-direction: column; gap: 6px; font-size: 0.95rem; }
-        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; background: #3f3f46; color: white;}
-        #bolo-banner { position: absolute; top: 0; left: 0; width: 100%; background: var(--danger); color: white; padding: 10px 0; text-align: center; font-weight: bold; letter-spacing: 2px; z-index: 100; display: none; }
+        /* 列表項目 */
+        .list-item { background: var(--bg-panel); padding: 18px; margin-bottom: 12px; border-radius: 10px; border-left: 5px solid var(--border); display: flex; flex-direction: column; gap: 8px; font-size: 0.95rem; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .list-item:hover { transform: translateX(3px); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; background: #52525b; color: white; letter-spacing: 0.5px;}
         
-        .char-card { background: var(--bg-input); border: 1px solid var(--border); padding: 15px; border-radius: 6px; cursor: pointer; margin-bottom: 10px; border-left: 4px solid var(--civ-green); transition: 0.2s; display: flex; justify-content: space-between; align-items: center;}
-        .char-card:hover { background: #27272a; }
-        .char-card.active { border-color: var(--civ-green); background: rgba(34, 197, 94, 0.15); }
+        #bolo-banner { position: absolute; top: 0; left: 0; width: 100%; background: linear-gradient(90deg, #991b1b, #ef4444, #991b1b); color: white; padding: 12px 0; text-align: center; font-weight: bold; letter-spacing: 3px; z-index: 100; display: none; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.6); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+
+        /* 市民角色卡片 */
+        .char-card { background: var(--bg-panel); border: 1px solid var(--border); padding: 18px; border-radius: 10px; cursor: pointer; margin-bottom: 12px; border-left: 5px solid var(--civ-green); transition: all 0.2s; display: flex; justify-content: space-between; align-items: center;}
+        .char-card:hover { background: var(--bg-input); transform: translateY(-2px); }
+        .char-card.active { border-color: var(--civ-green); background: rgba(34, 197, 94, 0.1); box-shadow: 0 0 0 1px var(--civ-green); }
         
-        .log-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        .log-table th, .log-table td { padding: 8px; text-align: left; border-bottom: 1px solid var(--border); }
+        /* 稽核日誌表格 */
+        .log-table-container { flex: 1; overflow-y: auto; background: var(--bg-panel); border: 1px solid var(--border); border-radius: 8px; }
+        .log-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        .log-table th { position: sticky; top: 0; background: #27272a; padding: 12px; text-align: left; color: var(--text-main); font-weight: 600; z-index: 10; border-bottom: 2px solid var(--border); }
+        .log-table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        .log-table tr:hover td { background: rgba(255,255,255,0.03); }
     </style>
 </head>
 <body>
 
 <div class="modal-overlay" id="pin-modal">
     <div class="modal-box">
-        <h3 style="margin-top:0; color:white;">🔒 授權驗證</h3>
-        <p style="color:var(--text-muted); font-size:0.9rem;">此為管制區域，請輸入授權金鑰。</p>
-        <input type="password" id="pin-input" placeholder="輸入 4 碼金鑰" style="text-align:center; font-size:1.2rem; letter-spacing:5px;">
-        <div class="flex">
-            <button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('pin-modal')">取消</button>
+        <h3 style="margin-top:0; color:white;">🔒 系統授權驗證</h3>
+        <p style="color:var(--text-muted); font-size:0.95rem;">此為管制區域，請輸入授權金鑰 (PIN)。</p>
+        <input type="password" id="pin-input" placeholder="••••" style="text-align:center; font-size:1.5rem; letter-spacing:10px; padding:15px;">
+        <div class="flex" style="margin-top:20px;">
+            <button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('pin-modal')">取消返回</button>
             <button class="btn-pol" style="width:100%; margin:0;" onclick="verifyPin()">驗證登入</button>
         </div>
     </div>
@@ -80,16 +114,16 @@
 
 <div class="modal-overlay" id="edit-call-modal">
     <div class="modal-box">
-        <h3 style="margin-top:0; color:white;">📝 編輯案件資訊</h3>
+        <h3 style="margin-top:0; color:white;">📝 編輯案件紀錄</h3>
         <input type="hidden" id="edit-call-id">
-        <label style="font-size:0.85rem; color:var(--text-muted);">案件標題</label>
+        <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">案件代號 / 標題</label>
         <input type="text" id="edit-call-title">
-        <label style="font-size:0.85rem; color:var(--text-muted);">發生地點</label>
+        <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">發生地點</label>
         <input type="text" id="edit-call-loc">
-        <label style="font-size:0.85rem; color:var(--text-muted);">詳細描述</label>
-        <textarea id="edit-call-desc" rows="4"></textarea>
-        <div class="flex">
-            <button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('edit-call-modal')">取消</button>
+        <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">詳細狀況描述</label>
+        <textarea id="edit-call-desc" rows="5"></textarea>
+        <div class="flex" style="margin-top:15px;">
+            <button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('edit-call-modal')">捨棄變更</button>
             <button class="btn-disp" style="width:100%; margin:0;" onclick="saveEditedCall()">儲存修改</button>
         </div>
     </div>
@@ -98,90 +132,91 @@
 <div class="modal-overlay" id="history-modal">
     <div class="modal-box">
         <h3 style="margin-top:0; color:white;">📁 歷史案件詳情</h3>
-        <p style="color:var(--text-muted); font-size:0.9rem;" id="hist-time"></p>
-        <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border); margin-bottom:15px;">
-            <strong style="color:white; font-size:1.1rem;" id="hist-title"></strong><br><span style="color:var(--text-muted);" id="hist-loc"></span>
+        <p style="color:var(--pol-blue); font-size:0.9rem; font-weight:bold;" id="hist-time"></p>
+        <div style="background:var(--bg-panel); padding:15px; border-radius:8px; border:1px solid var(--border); margin-bottom:15px;">
+            <strong style="color:white; font-size:1.2rem;" id="hist-title"></strong><br>
+            <span style="color:var(--text-muted); display:inline-block; margin-top:5px;" id="hist-loc"></span>
         </div>
-        <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border); color:white; min-height:80px;" id="hist-desc"></div>
-        <div class="flex" style="margin-top:15px;"><button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('history-modal')">關閉</button></div>
+        <div style="background:var(--bg-input); padding:15px; border-radius:8px; border:1px solid var(--border); color:white; min-height:100px; line-height:1.6;" id="hist-desc"></div>
+        <div class="flex" style="margin-top:20px;"><button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('history-modal')">關閉視窗</button></div>
     </div>
 </div>
 
 <div class="modal-overlay" id="law-modal">
     <div class="modal-box modal-box-large">
-        <div class="flex" style="justify-content:space-between; margin-bottom:10px;">
-            <h3 style="margin:0; color:white;">📖 伺服器專屬法典 (Amongst)</h3>
-            <button class="btn-danger" style="margin:0; padding:6px 12px;" onclick="closeModal('law-modal')">關閉視窗</button>
+        <div class="flex" style="justify-content:space-between; margin-bottom:15px;">
+            <h3 style="margin:0; color:white; font-size:1.3rem;">📖 伺服器專屬法典 (Amongst)</h3>
+            <button class="btn-danger" style="margin:0; padding:8px 15px;" onclick="closeModal('law-modal')">✕ 關閉</button>
         </div>
-        <iframe src="https://amingwang.github.io/Amongst/" style="width:100%; flex:1; border:none; border-radius:6px; background:white;"></iframe>
+        <iframe src="https://amingwang.github.io/Amongst/" style="width:100%; flex:1; border:1px solid var(--border); border-radius:8px; background:white;"></iframe>
     </div>
 </div>
 
 <div class="modal-overlay" id="edit-citizen-modal">
     <div class="modal-box">
-        <h3 style="margin-top:0; color:white;">📝 編輯市民檔案 (Admin)</h3>
+        <h3 style="margin-top:0; color:white;">📝 編輯市民戶政檔案</h3>
         <input type="hidden" id="adm-civ-id">
-        <label style="font-size:0.85rem; color:var(--text-muted);">完整姓名</label>
+        <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">身分證上之全名</label>
         <input type="text" id="adm-civ-name">
         <div class="flex">
-            <div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted);">出生年月日</label><input type="date" id="adm-civ-dob"></div>
-            <div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted);">性別</label><select id="adm-civ-gender"><option>男</option><option>女</option></select></div>
+            <div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">出生年月日</label><input type="date" id="adm-civ-dob"></div>
+            <div style="flex:1;"><label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">性別</label><select id="adm-civ-gender"><option>男</option><option>女</option></select></div>
         </div>
-        <label style="font-size:0.85rem; color:var(--text-muted);">居住地址</label>
+        <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600;">居住地址</label>
         <input type="text" id="adm-civ-addr">
-        <div class="flex" style="margin-top:15px;">
+        <div class="flex" style="margin-top:20px;">
             <button class="btn-dark" style="width:100%; margin:0;" onclick="closeModal('edit-citizen-modal')">取消</button>
-            <button class="btn-warning" style="width:100%; margin:0; color:black;" onclick="saveEditedCitizen()">強制儲存</button>
+            <button class="btn-warning" style="width:100%; margin:0;" onclick="saveEditedCitizen()">強制覆寫</button>
         </div>
     </div>
 </div>
 
 <div id="auth-screen">
-    <div class="modal-box" style="text-align:center;">
-        <h2 style="color:var(--pol-blue); margin-top:0;">SA-CAD 聯邦安全終端</h2>
-        <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:30px;">請使用您的 Google 帳戶進行連線綁定。</p>
-        <button class="btn-pol" style="width:100%; font-size:1.1rem; padding:15px;" onclick="signInWithGoogle()">🌐 連結 Google 帳戶登入</button>
+    <div class="modal-box" style="text-align:center; width:380px;">
+        <h2 style="color:var(--pol-blue); margin-top:0; font-size:1.6rem;">SA-CAD 聯邦終端</h2>
+        <p style="color:var(--text-muted); font-size:0.95rem; margin-bottom:35px; line-height:1.5;">請授權您的 Google 帳戶以建立安全連線，未經授權之存取將受到追蹤。</p>
+        <button class="btn-pol" style="width:100%; font-size:1.1rem; padding:16px;" onclick="signInWithGoogle()">🌐 連結 Google 帳戶登入</button>
     </div>
 </div>
 
 <div id="dept-screen">
-    <h1 style="margin:0;">SA-CAD 系統入口</h1>
-    <p style="color:var(--text-muted);">綁定帳戶: <strong id="auth-user-email" style="color:white;"></strong></p>
+    <h1 style="margin:0; font-size:2.2rem; letter-spacing:1px;">系統入口閘道</h1>
+    <p style="color:var(--text-muted); font-size:1.1rem;">目前授權帳戶: <strong id="auth-user-email" style="color:white;"></strong></p>
     <div class="dept-grid">
-        <button class="dept-btn" style="color:var(--civ-green); border-color:var(--civ-green);" onclick="openPinModal('citizen')">👤 市政大廳 (免金鑰)</button>
-        <button class="dept-btn" style="color:var(--pol-blue);" onclick="openPinModal('police')">🚓 LSPD 警察終端</button>
-        <button class="dept-btn" style="color:var(--ems-red);" onclick="openPinModal('ems')">🚑 LSFD 消防醫療</button>
-        <button class="dept-btn" style="color:var(--disp-purple);" onclick="openPinModal('dispatch')">📡 911 調度中心</button>
-        <button class="dept-btn" style="color:var(--warning); grid-column: 1 / span 2;" onclick="openPinModal('admin')">⚙️ 伺服器管理後台</button>
+        <button class="dept-btn" style="color:var(--civ-green); border-color:rgba(34, 197, 94, 0.4);" onclick="openPinModal('citizen')"><span style="font-size:1.8rem; display:block; margin-bottom:5px;">👤</span> 市政大廳 (免金鑰)</button>
+        <button class="dept-btn" style="color:var(--pol-blue); border-color:rgba(59, 130, 246, 0.4);" onclick="openPinModal('police')"><span style="font-size:1.8rem; display:block; margin-bottom:5px;">🚓</span> LSPD 警察終端</button>
+        <button class="dept-btn" style="color:var(--ems-red); border-color:rgba(239, 68, 68, 0.4);" onclick="openPinModal('ems')"><span style="font-size:1.8rem; display:block; margin-bottom:5px;">🚑</span> LSFD 消防醫療</button>
+        <button class="dept-btn" style="color:var(--disp-purple); border-color:rgba(168, 85, 247, 0.4);" onclick="openPinModal('dispatch')"><span style="font-size:1.8rem; display:block; margin-bottom:5px;">📡</span> 911 調度中心</button>
+        <button class="dept-btn" style="color:var(--warning); grid-column: 1 / span 2; border-color:rgba(245, 158, 11, 0.4);" onclick="openPinModal('admin')"><span style="font-size:1.8rem; display:block; margin-bottom:5px;">⚙️</span> 系統管理員 (Root)</button>
     </div>
-    <button class="btn-dark" style="margin-top:30px;" onclick="logOut()">登出 Google 帳戶</button>
+    <button class="btn-dark" style="margin-top:40px; padding:12px 30px; font-size:1rem;" onclick="logOut()">登出並切換帳戶</button>
 </div>
 
 <div id="app">
     <div class="sidebar">
         <div class="sidebar-header">
-            <div style="font-weight:bold; letter-spacing:1px; color:var(--text-muted);">SAN ANDREAS CAD</div>
-            <div id="sys-time" style="font-family:monospace; font-size:1.5rem; color:#fff; margin-top:5px;">00:00:00</div>
+            <div style="font-weight:800; letter-spacing:2px; color:var(--text-muted); font-size:1.1rem;">SAN ANDREAS CAD</div>
+            <div id="sys-time" style="font-family:monospace; font-size:1.8rem; color:#fff; margin-top:8px;">00:00:00</div>
         </div>
         <div class="user-info">
-            <div style="margin-bottom:5px;">🌐 <span id="sb-email" style="color:white;"></span></div>
-            <div>🏢 <strong id="sb-dept" style="color:white; padding:2px 6px; background:#333; border-radius:4px;"></strong></div>
+            <div style="margin-bottom:8px; font-size:0.95rem;">🌐 <span id="sb-email" style="color:white; font-weight:600;"></span></div>
+            <div style="font-size:0.95rem;">🏢 <strong id="sb-dept" style="color:white; padding:4px 8px; background:#27272a; border-radius:6px; border:1px solid #3f3f46;"></strong></div>
         </div>
-        <div id="callsign-box" style="padding:20px; display:none;">
-            <label style="font-size:0.85rem; color:var(--text-muted);">今日執勤呼號 (Callsign)</label>
-            <input type="text" id="global-callsign" placeholder="例如: Adam-12" style="text-align:center; font-weight:bold;">
-            <button class="btn-pol" id="duty-btn" style="width:100%; margin:0;" onclick="goOnDuty()">10-8 打卡上班</button>
+        <div id="callsign-box" style="padding:25px; display:none;">
+            <label style="font-size:0.85rem; color:var(--text-muted); font-weight:600; display:block; margin-bottom:8px;">目前執勤呼號 (Callsign)</label>
+            <input type="text" id="global-callsign" placeholder="例如: Adam-12" style="text-align:center; font-weight:bold; font-size:1.1rem; padding:15px;">
+            <button class="btn-pol" id="duty-btn" style="width:100%; margin:0; padding:15px; font-size:1.05rem;" onclick="goOnDuty()">10-8 簽到上班</button>
         </div>
-        <button class="btn-dark" style="margin:auto 20px 20px 20px;" onclick="systemLogout()">切換部門 / 自動下班登出</button>
+        <button class="btn-dark" style="margin:auto 20px 25px 20px; padding:15px;" onclick="systemLogout()">切換部門 / 自動下班登出</button>
     </div>
 
     <main class="main-content">
-        <div id="bolo-banner">🚨 10-99 PANIC ALARM / 緊急狀態觸發 🚨 <span id="panic-caller"></span></div>
+        <div id="bolo-banner">🚨 10-99 OFFICER IN DISTRESS / 緊急狀態觸發 🚨 <span id="panic-caller"></span></div>
 
         <div id="view-police" class="dept-view">
-            <div class="flex" style="justify-content:space-between; margin-bottom: 20px;">
-                <h2 style="margin:0;">LSPD 執法數據終端機 (MDT)</h2>
-                <button class="btn-danger" style="margin:0; font-size:1.1rem;" onclick="triggerPanic()">🚨 10-99 (PANIC BUTTON)</button>
+            <div class="flex" style="justify-content:space-between; margin-bottom: 25px;">
+                <h2 style="margin:0; font-size:1.8rem;">LSPD 執法數據終端機 (MDT)</h2>
+                <button class="btn-danger" style="margin:0; font-size:1.2rem; padding:12px 25px;" onclick="triggerPanic()">🚨 10-99 (PANIC BUTTON)</button>
             </div>
             <div class="status-row" id="pol-status-row" style="opacity: 0.5; pointer-events: none;">
                 <button class="status-btn" onclick="setUnitStatus('10-8 (巡邏中)')">10-8 巡邏</button>
@@ -193,122 +228,125 @@
             <div class="grid-2">
                 <div class="card">
                     <div class="card-header">🚨 指派任務 (My Call)</div>
-                    <div id="pol-my-call" style="color:var(--text-muted); overflow-y:auto; max-height:300px;">無分派勤務。</div>
+                    <div id="pol-my-call" style="color:var(--text-muted); overflow-y:auto; max-height:350px;">目前無指派勤務。</div>
                 </div>
                 <div class="card">
-                    <div class="card-header">🔍 NCIC 資料庫檢索</div>
-                    <select id="ncic-type" style="margin-bottom:10px;" onchange="toggleNcicInputs()">
-                        <option value="citizen">👤 查人 (姓名查詢)</option>
+                    <div class="card-header">🔍 NCIC 聯邦資料庫檢索</div>
+                    <select id="ncic-type" style="margin-bottom:15px;" onchange="toggleNcicInputs()">
+                        <option value="citizen">👤 查人 (透過姓名)</option>
                         <option value="id">🆔 查人 (身分證字號)</option>
-                        <option value="vehicle">🚗 查車 (車牌)</option>
-                        <option value="weapon">🔫 查槍 (序號)</option>
+                        <option value="vehicle">🚗 查車 (車牌號碼)</option>
+                        <option value="weapon">🔫 查槍 (槍枝序號)</option>
                     </select>
                     
                     <div id="ncic-name-inputs" class="flex">
                         <input type="text" id="ncic-last" placeholder="姓 (Last Name)" style="margin:0; flex:1;">
                         <input type="text" id="ncic-first" placeholder="名 (First Name)" style="margin:0; flex:1;">
-                        <button class="btn-pol" style="margin:0;" onclick="runNCIC()">檢索</button>
+                        <button class="btn-pol" style="margin:0; padding:12px 20px;" onclick="runNCIC()">檢索</button>
                     </div>
                     <div id="ncic-id-inputs" class="flex" style="display:none;">
                         <input type="text" id="ncic-query" placeholder="精確輸入字號或車牌..." style="margin:0; flex:1;">
-                        <button class="btn-pol" style="margin:0;" onclick="runNCIC()">檢索</button>
+                        <button class="btn-pol" style="margin:0; padding:12px 20px;" onclick="runNCIC()">檢索</button>
                     </div>
 
-                    <div id="ncic-result" style="margin-top:15px; padding:15px; background:var(--bg-input); border-radius:6px; min-height:150px; color:var(--text-muted); max-height:350px; overflow-y:auto;">等待輸入查詢條件...</div>
+                    <div id="ncic-result" style="margin-top:20px; padding:18px; background:var(--bg-panel); border:1px solid var(--border); border-radius:8px; min-height:120px; color:var(--text-muted); max-height:350px; overflow-y:auto;">等待輸入查詢條件...</div>
                 </div>
             </div>
-            <div class="grid-2" style="margin-top:20px;">
+            <div class="grid-2" style="margin-top:24px;">
                 <div class="card">
-                    <div class="card-header">📝 開立罰單與前科 <button class="btn-dark" style="margin:0; padding:4px 8px; font-size:0.85rem;" onclick="openModal('law-modal')">📖 查閱法規</button></div>
-                    <input type="text" id="ticket-id" placeholder="嫌疑人身分證號">
+                    <div class="card-header">
+                        📝 開立罰單與前科
+                        <button class="btn-dark" style="margin:0; padding:6px 12px; font-size:0.85rem;" onclick="openModal('law-modal')">📖 查閱刑法典</button>
+                    </div>
+                    <input type="text" id="ticket-id" placeholder="嫌疑人身分證號 (例: CIT-123)">
                     <select id="ticket-law"><option value="">載入法典中...</option></select>
-                    <input type="number" id="ticket-fine" placeholder="罰款金額 (系統帶入)">
-                    <button class="btn-pol" style="width:100%; margin:0;" onclick="issueTicket()">開單並寫入前科</button>
+                    <input type="number" id="ticket-fine" placeholder="罰款金額 (系統自動帶入)">
+                    <button class="btn-pol" style="width:100%; margin:0; padding:15px; font-size:1.05rem;" onclick="issueTicket()">開單並永久寫入前科庫</button>
                 </div>
                 <div class="card">
                     <div class="card-header" style="color:var(--danger);">⚠️ 發布全國通緝令</div>
                     <input type="text" id="warrant-id" placeholder="逃犯身分證號">
                     <input type="text" id="warrant-reason" placeholder="通緝原因 (例如: 襲警逃逸)">
-                    <button class="btn-danger" style="width:100%; margin:0;" onclick="issueWarrant()">發布通緝</button>
+                    <button class="btn-danger" style="width:100%; margin:0; padding:15px; font-size:1.05rem;" onclick="issueWarrant()">正式發布通緝</button>
                 </div>
             </div>
         </div>
 
         <div id="view-dispatch" class="dept-view">
-            <div class="flex" style="justify-content:space-between; margin-bottom: 20px;">
-                <h2 style="margin:0;">911 綜合調度指揮中心 (CAD)</h2>
-                <button class="btn-danger" style="margin:0;" onclick="forceAllOffline()">⛔ 強制所有單位下線 (10-7)</button>
+            <div class="flex" style="justify-content:space-between; margin-bottom: 25px;">
+                <h2 style="margin:0; font-size:1.8rem;">911 綜合調度指揮中心 (CAD)</h2>
+                <button class="btn-danger" style="margin:0; padding:10px 20px;" onclick="forceAllOffline()">⛔ 強制全體單位下班 (10-7)</button>
             </div>
             <div class="grid-3">
-                <div class="card" style="height:fit-content; border-top: 4px solid var(--disp-purple);">
-                    <div class="card-header">📡 建立新案件</div>
-                    <select id="disp-priority"><option value="1">Priority 1 (最高緊急)</option><option value="2">Priority 2 (常規緊急)</option><option value="3">Priority 3 (一般案件)</option></select>
+                <div class="card" style="height:fit-content; border-top: 5px solid var(--disp-purple);">
+                    <div class="card-header">📡 發佈緊急勤務</div>
+                    <select id="disp-priority"><option value="1">Code 3 (最高緊急/鳴笛)</option><option value="2">Code 2 (常規緊急)</option><option value="3">Code 1 (一般案件)</option></select>
                     <input type="text" id="disp-title" placeholder="案件代號/標題">
                     <input type="text" id="disp-loc" placeholder="發生地點">
-                    <textarea id="disp-desc" rows="3" placeholder="詳細狀況"></textarea>
-                    <button class="btn-disp" style="width:100%; margin:0;" onclick="createCall()">建立案件</button>
+                    <textarea id="disp-desc" rows="4" placeholder="詳細狀況"></textarea>
+                    <button class="btn-disp" style="width:100%; margin:0; padding:15px; font-size:1.05rem;" onclick="createCall()">廣播派遣案件</button>
                 </div>
                 
                 <div class="card" style="max-height: 80vh;">
-                    <div class="card-header">🚨 進行中案件 (Active Calls)</div>
-                    <div id="disp-calls-board" style="overflow-y:auto; flex:1;"></div>
+                    <div class="card-header">🚨 進行中案件監控 (Active Calls)</div>
+                    <div id="disp-calls-board" style="overflow-y:auto; flex:1; padding-right:5px;"></div>
                 </div>
 
                 <div class="card" style="max-height: 80vh; display:flex; flex-direction:column;">
-                    <div class="card-header">🚓 執勤單位列表</div>
-                    <div id="disp-units-board" style="flex:1; overflow-y:auto; margin-bottom:15px; border-bottom:1px solid var(--border); padding-bottom:10px;"></div>
+                    <div class="card-header">🚓 執勤單位名單</div>
+                    <div id="disp-units-board" style="flex:1; overflow-y:auto; margin-bottom:20px; border-bottom:2px solid var(--border); padding-bottom:15px;"></div>
                     
-                    <div class="card-header" style="border:none; padding-bottom:5px;">📁 歷史案件庫</div>
+                    <div class="card-header" style="border:none; padding-bottom:5px;">📁 歷史歸檔庫</div>
                     <div id="disp-history-board" style="flex:1; overflow-y:auto;"></div>
                 </div>
             </div>
         </div>
 
         <div id="view-ems" class="dept-view">
-            <h2 style="margin-top:0; margin-bottom: 20px;">消防與醫療救援終端 (Fire/EMS)</h2>
+            <h2 style="margin-top:0; margin-bottom: 25px; font-size:1.8rem;">消防與醫療救援終端 (Fire/EMS)</h2>
             <div class="status-row" id="ems-status-row" style="opacity: 0.5; pointer-events: none;">
                 <button class="status-btn" onclick="setUnitStatus('10-8 (值勤中)')">10-8 上班 (On Duty)</button>
                 <button class="status-btn" onclick="setUnitStatus('10-7 (下班)')">10-7 下班 (Off Duty)</button>
                 <button class="status-btn" onclick="setUnitStatus('10-23 (抵達現場)')">10-23 抵達現場</button>
-                <button class="status-btn" onclick="setUnitStatus('病患運送中')">🚑 運送病患</button>
+                <button class="status-btn" onclick="setUnitStatus('病患運送中')">🚑 運送病患至醫院</button>
             </div>
             <div class="grid-2">
                 <div class="card">
-                    <div class="card-header">🚨 醫療任務 (My Call)</div>
-                    <div id="ems-my-call" style="color:var(--text-muted); overflow-y:auto; max-height:300px;">無勤務。</div>
+                    <div class="card-header">🚨 受指派醫療任務 (My Call)</div>
+                    <div id="ems-my-call" style="color:var(--text-muted); overflow-y:auto; max-height:350px;">目前無勤務。</div>
                 </div>
                 <div class="card">
-                    <div class="card-header">🏥 驗傷/處置報告</div>
+                    <div class="card-header">🏥 建立醫療與處置報告</div>
                     <input type="text" id="med-patient" placeholder="病患身分證號">
-                    <textarea id="med-desc" rows="5" placeholder="傷勢描述與處置..."></textarea>
-                    <button class="btn-ems" style="width:100%; margin:0;" onclick="saveMedReport()">寫入病歷庫</button>
+                    <textarea id="med-desc" rows="6" placeholder="詳細傷勢描述與施作醫療處置..."></textarea>
+                    <button class="btn-ems" style="width:100%; margin:0; padding:15px; font-size:1.05rem;" onclick="saveMedReport()">建檔並寫入病歷庫</button>
                 </div>
             </div>
         </div>
 
         <div id="view-citizen" class="dept-view">
-            <h2 style="margin-top:0; margin-bottom: 20px;">市政服務大廳 (Citizen Portal)</h2>
+            <h2 style="margin-top:0; margin-bottom: 25px; font-size:1.8rem;">市政服務大廳 (Citizen Portal)</h2>
             <div class="grid-3">
                 <div class="card">
-                    <div class="card-header">👥 我的身分檔案</div>
-                    <div id="civ-char-list" style="max-height:200px; overflow-y:auto; margin-bottom:15px;"></div>
+                    <div class="card-header">👥 我的角色檔案</div>
+                    <div id="civ-char-list" style="max-height:250px; overflow-y:auto; margin-bottom:20px;"></div>
                     <hr style="border-color:var(--border); margin:0 0 15px 0;">
-                    <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:5px;">建立新身分</div>
+                    <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:8px; font-weight:600;">建立新身分</div>
                     <div class="flex"><input type="text" id="civ-last" placeholder="姓 (Last)"><input type="text" id="civ-first" placeholder="名 (First)"></div>
                     <div class="flex"><input type="date" id="civ-dob" style="flex:2;"><select id="civ-gender" style="flex:1;"><option>男</option><option>女</option></select></div>
                     <input type="text" id="civ-addr" placeholder="居住地址 (例如: 密申羅 1 號)">
-                    <button class="btn-civ" style="width:100%; margin:0;" onclick="createCharacter()">建立檔案</button>
+                    <button class="btn-civ" style="width:100%; margin:0; padding:12px;" onclick="createCharacter()">送出戶政申請</button>
                 </div>
                 
-                <div class="card" id="civ-action-panel" style="display:none; grid-column: span 2; border-top: 4px solid var(--civ-green);">
+                <div class="card" id="civ-action-panel" style="display:none; grid-column: span 2; border-top: 5px solid var(--civ-green);">
                     <div class="card-header">
-                        <span>目前扮演: <strong id="civ-active-name" style="color:var(--civ-green); font-size:1.3rem;"></strong></span>
-                        <span id="civ-active-id" class="badge"></span>
+                        <span>目前扮演: <strong id="civ-active-name" style="color:var(--civ-green); font-size:1.4rem;"></strong></span>
+                        <span id="civ-active-id" class="badge" style="font-size:1rem; padding:6px 12px;"></span>
                     </div>
                     <div class="grid-2">
-                        <div style="display:flex; flex-direction:column; gap:20px;">
-                            <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border);">
-                                <h3 style="margin-top:0;">📋 申請/登記資產</h3>
+                        <div style="display:flex; flex-direction:column; gap:24px;">
+                            <div style="background:var(--bg-panel); padding:20px; border-radius:10px; border:1px solid var(--border); box-shadow:0 4px 6px rgba(0,0,0,0.1);">
+                                <h3 style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:8px;">📋 申請與登記資產</h3>
                                 <select id="civ-asset-type" onchange="toggleCivAssetInput()">
                                     <option value="車輛">🚗 車輛登記</option>
                                     <option value="槍枝">🔫 槍枝登記</option>
@@ -318,21 +356,21 @@
                                 <input type="text" id="civ-asset-detail" placeholder="輸入車牌號碼 / 槍枝序號">
                                 <button class="btn-dark" style="width:100%; margin:0;" onclick="registerAsset()">送出登記申請</button>
                             </div>
-                            <div style="background:rgba(239, 68, 68, 0.1); padding:15px; border-radius:6px; border:1px solid var(--danger);">
-                                <h3 style="margin-top:0; color:var(--danger);">🚨 911 線上報案</h3>
+                            <div style="background:rgba(239, 68, 68, 0.05); padding:20px; border-radius:10px; border:1px solid rgba(239, 68, 68, 0.3);">
+                                <h3 style="margin-top:0; color:var(--danger); border-bottom:1px solid rgba(239, 68, 68, 0.2); padding-bottom:8px;">🚨 911 線上報案</h3>
                                 <input type="text" id="civ-911-loc" placeholder="輸入案發地點">
-                                <textarea id="civ-911-desc" rows="2" placeholder="現場狀況描述..."></textarea>
+                                <textarea id="civ-911-desc" rows="3" placeholder="現場狀況描述..."></textarea>
                                 <button class="btn-danger" style="width:100%; margin:0;" onclick="send911()">發送緊急求救</button>
                             </div>
                         </div>
-                        <div style="display:flex; flex-direction:column; gap:20px;">
-                            <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border); flex:1;">
-                                <h3 style="margin-top:0;">我的未繳罰單</h3>
-                                <div id="civ-tickets-board" style="overflow-y:auto; max-height:180px; color:var(--text-muted);">讀取中...</div>
+                        <div style="display:flex; flex-direction:column; gap:24px;">
+                            <div style="background:var(--bg-panel); padding:20px; border-radius:10px; border:1px solid var(--border); flex:1; display:flex; flex-direction:column;">
+                                <h3 style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:8px;">⚖️ 我的未繳罰單</h3>
+                                <div id="civ-tickets-board" style="overflow-y:auto; flex:1; color:var(--text-muted);">讀取中...</div>
                             </div>
-                            <div style="background:var(--bg-input); padding:15px; border-radius:6px; border:1px solid var(--border); flex:1;">
-                                <h3 style="margin-top:0;">我名下的資產/執照</h3>
-                                <div id="civ-assets-board" style="overflow-y:auto; max-height:180px; color:var(--text-muted);">讀取中...</div>
+                            <div style="background:var(--bg-panel); padding:20px; border-radius:10px; border:1px solid var(--border); flex:1; display:flex; flex-direction:column;">
+                                <h3 style="margin-top:0; border-bottom:1px solid var(--border); padding-bottom:8px;">📂 我名下的資產/執照</h3>
+                                <div id="civ-assets-board" style="overflow-y:auto; flex:1; color:var(--text-muted);">讀取中...</div>
                             </div>
                         </div>
                     </div>
@@ -341,11 +379,11 @@
         </div>
 
         <div id="view-admin" class="dept-view">
-            <h2 style="margin-top:0; margin-bottom: 20px;">系統管理後台 (Root Admin)</h2>
+            <h2 style="margin-top:0; margin-bottom: 25px; font-size:1.8rem;">系統管理後台 (Root Admin)</h2>
             <div class="grid-3">
                 
                 <div class="card" style="display:flex; flex-direction:column;">
-                    <div class="card-header">⚖️ 刑法典管理 <button class="btn-dark" style="margin:0; padding:4px 8px; font-size:0.85rem;" onclick="openModal('law-modal')">📖 查閱法規</button></div>
+                    <div class="card-header">⚖️ 刑法典管理 <button class="btn-dark" style="margin:0; padding:6px 12px; font-size:0.85rem;" onclick="openModal('law-modal')">📖 查閱法規</button></div>
                     <div class="flex">
                         <input type="text" id="adm-law-name" placeholder="罪名" style="margin:0;">
                         <input type="number" id="adm-law-fine" placeholder="罰款$" style="margin:0; width:90px;">
@@ -353,28 +391,28 @@
                     </div>
                     <div id="adm-laws-board" style="margin-top:15px; flex:1; overflow-y:auto; border-top:1px solid var(--border); padding-top:10px;"></div>
                     
-                    <hr style="border-color:var(--border); width:100%; margin:15px 0;">
+                    <hr style="border-color:var(--border); width:100%; margin:20px 0;">
                     
-                    <div class="card-header" style="color:var(--danger); border:none; padding:0; margin-bottom:10px;">⚠️ 資料庫清理</div>
-                    <button class="btn-disp" style="width:100%;" onclick="backupData()">📥 匯出案件備份 (JSON)</button>
-                    <button class="btn-danger" style="width:100%; margin:0;" onclick="clearAllHistory()">🧹 清空歷史案件</button>
+                    <div class="card-header" style="color:var(--danger); border:none; padding:0; margin-bottom:15px;">⚠️ 系統資料維護</div>
+                    <button class="btn-disp" style="width:100%; margin-bottom:10px;" onclick="backupData()">📥 匯出案件備份 (JSON)</button>
+                    <button class="btn-danger" style="width:100%; margin:0;" onclick="clearAllHistory()">🧹 清空歷史案件區</button>
                 </div>
 
                 <div class="card">
-                    <div class="card-header">👥 全伺服器市民管理</div>
-                    <input type="text" id="adm-civ-search" placeholder="搜尋市民姓名或身分證..." onkeyup="filterAdminCitizens()">
-                    <div id="adm-citizens-board" style="overflow-y:auto; max-height: 450px;"></div>
+                    <div class="card-header">👥 全伺服器戶政管理</div>
+                    <input type="text" id="adm-civ-search" placeholder="輸入市民姓名或身分證字號搜尋..." onkeyup="filterAdminCitizens()" style="background:var(--bg-panel);">
+                    <div id="adm-citizens-board" style="overflow-y:auto; max-height: 500px; padding-top:10px;"></div>
                 </div>
 
                 <div class="card">
-                    <div class="card-header">🛡️ 系統稽核紀錄 (Logs)</div>
-                    <select id="log-filter" onchange="filterLogs(this.value)">
-                        <option value="all">全部紀錄</option>
-                        <option value="police">警察操作</option>
-                        <option value="dispatch">調度操作</option>
-                        <option value="citizen">市民操作</option>
+                    <div class="card-header">🛡️ 系統防弊稽核紀錄</div>
+                    <select id="log-filter" onchange="filterLogs(this.value)" style="background:var(--bg-panel);">
+                        <option value="all">顯示全部紀錄</option>
+                        <option value="police">🚓 警察操作</option>
+                        <option value="dispatch">📡 調度操作</option>
+                        <option value="citizen">👤 市民操作</option>
                     </select>
-                    <div style="flex:1; overflow-y:auto; background:var(--bg-input); border:1px solid var(--border);">
+                    <div class="log-table-container">
                         <table class="log-table"><tbody id="audit-table-body"></tbody></table>
                     </div>
                 </div>
@@ -388,6 +426,7 @@
     import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, query, onSnapshot, orderBy, serverTimestamp, arrayUnion, arrayRemove, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+    // 🔑 在這裡已經寫入你的專屬金鑰
     const firebaseConfig = {
         apiKey: "AIzaSyD4po8muOv3Wzm8NSJxph5UXdmR4zdZZa4",
         authDomain: "lspd-mdt-system.firebaseapp.com",
@@ -409,7 +448,7 @@
     let onlineUnits = [], penalCodes = [], auditLogsData = [], allCitizensData = [];
 
     // ==========================================
-    // 基礎與 Auth
+    // 基礎與 UI 控制
     // ==========================================
     setInterval(() => { document.getElementById("sys-time").innerText = new Date().toLocaleTimeString('en-US', { hour12: false }); }, 1000);
     window.openModal = (id) => { document.getElementById(id).style.display = 'flex'; };
@@ -443,7 +482,7 @@
 
     window.openPinModal = (dept) => { targetDept = dept; if(dept === 'citizen') verifyPin(true); else { document.getElementById("pin-input").value = ""; openModal('pin-modal'); }};
     window.verifyPin = (bypass = false) => {
-        if (!bypass && document.getElementById("pin-input").value !== DEPT_KEYS[targetDept]) return alert("❌ 金鑰錯誤！");
+        if (!bypass && document.getElementById("pin-input").value !== DEPT_KEYS[targetDept]) return alert("❌ 授權金鑰錯誤！");
         closeModal('pin-modal'); currentDept = targetDept;
         document.getElementById("dept-screen").style.display = "none"; document.getElementById("app").style.display = "flex";
         
@@ -461,9 +500,9 @@
     // 警消共用
     // ==========================================
     window.goOnDuty = async () => {
-        const cs = document.getElementById("global-callsign").value.trim(); if(!cs) return alert("輸入呼號！");
+        const cs = document.getElementById("global-callsign").value.trim(); if(!cs) return alert("請輸入呼號！");
         const ref = await addDoc(collection(db, "units"), { name: cs, dept: currentDept==='police'?"LSPD":"LSFD", status: "10-8 (剛上線)", timestamp: serverTimestamp() });
-        myUnitId = ref.id; document.getElementById("global-callsign").disabled = true; document.getElementById("duty-btn").innerText = "已上線"; document.getElementById("duty-btn").disabled = true;
+        myUnitId = ref.id; document.getElementById("global-callsign").disabled = true; document.getElementById("duty-btn").innerText = "已打卡上線"; document.getElementById("duty-btn").disabled = true;
         if(currentDept === 'police') document.getElementById("pol-status-row").style.cssText = "opacity:1; pointer-events:auto;";
         if(currentDept === 'ems') document.getElementById("ems-status-row").style.cssText = "opacity:1; pointer-events:auto;";
         logAudit(currentDept, `上線打卡`);
@@ -480,7 +519,7 @@
     };
 
     // ==========================================
-    // 警察 NCIC 與開單
+    // 警察 NCIC
     // ==========================================
     window.toggleNcicInputs = () => {
         const t = document.getElementById("ncic-type").value;
@@ -491,57 +530,56 @@
     window.runNCIC = async () => {
         const type = document.getElementById("ncic-type").value;
         const resBox = document.getElementById("ncic-result");
-        resBox.innerHTML = "聯邦資料庫檢索中...";
+        resBox.innerHTML = "聯邦資料庫連線檢索中...";
 
         try {
             if(type === 'citizen' || type === 'id') {
                 let cDoc = null;
                 if(type === 'citizen') {
-                    const last = document.getElementById("ncic-last").value.trim();
-                    const first = document.getElementById("ncic-first").value.trim();
-                    if(!last || !first) return resBox.innerHTML = "請輸入完整的姓與名。";
+                    const last = document.getElementById("ncic-last").value.trim(); const first = document.getElementById("ncic-first").value.trim();
+                    if(!last || !first) return resBox.innerHTML = "請輸入完整的姓氏與名字。";
                     const snap = await getDocs(query(collection(db, "citizens"), where("fullName", "==", `${last} ${first}`)));
                     if(!snap.empty) cDoc = snap.docs[0];
                 } else {
-                    const q = document.getElementById("ncic-query").value.trim().toUpperCase();
-                    if(!q) return;
+                    const q = document.getElementById("ncic-query").value.trim().toUpperCase(); if(!q) return;
                     const snap = await getDocs(query(collection(db, "citizens"), where("citizenId", "==", q)));
                     if(!snap.empty) cDoc = snap.docs[0];
                 }
                 
                 if(cDoc) {
                     const data = cDoc.data();
-                    
-                    // 抓取通緝
                     const wSnap = await getDocs(query(collection(db, "warrants"), where("citizenId", "==", data.citizenId)));
                     let wHtml = "";
-                    wSnap.forEach(d => { wHtml += `<div style="color:var(--danger); margin-bottom:5px;">⚠️ ${d.data().reason} <button class="btn-dark" style="padding:2px 6px; font-size:0.75rem; margin:0;" onclick="deleteWarrant('${d.id}')">撤銷通緝</button></div>`; });
+                    wSnap.forEach(d => { wHtml += `<div style="color:var(--danger); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;"><span>⚠️ ${d.data().reason}</span> <button class="btn-dark" style="padding:4px 8px; font-size:0.8rem; margin:0;" onclick="deleteWarrant('${d.id}')">撤銷通緝</button></div>`; });
                     if(!wHtml) wHtml = "<span class='badge' style='background:var(--civ-green);'>無通緝紀錄</span>";
 
-                    // 抓取資產
                     const aSnap = await getDocs(query(collection(db, "assets"), where("citizenId", "==", data.citizenId)));
                     let aHtml = "";
-                    aSnap.forEach(d => { aHtml += `<div class="badge" style="background:#444; margin-bottom:5px;">[${d.data().type}] ${d.data().detail}</div> `; });
-                    if(!aHtml) aHtml = "<span style='color:#777; font-size:0.85rem;'>名下無任何資產或執照。</span>";
+                    aSnap.forEach(d => { aHtml += `<span class="badge" style="background:var(--border); margin:0 5px 5px 0; display:inline-block;">[${d.data().type}] ${d.data().detail}</span>`; });
+                    if(!aHtml) aHtml = "<span style='color:var(--text-muted); font-size:0.9rem;'>名下無任何資產或執照。</span>";
 
-                    resBox.innerHTML = `<strong style="color:var(--pol-blue); font-size:1.1rem;">👤 綜合市民檔案</strong><br><br>
-                        <strong>身分證:</strong> ${data.citizenId}<br><strong>姓名:</strong> ${data.fullName}<br>
-                        <strong>生日:</strong> ${data.dob} | <strong>性別:</strong> ${data.gender}<br>
-                        <strong>住址:</strong> ${data.address}<hr style="border-color:var(--border);">
-                        <strong>🚨 通緝狀態:</strong><br>${wHtml}<hr style="border-color:var(--border);">
-                        <strong>📋 名下資產/執照:</strong><br>${aHtml}`;
-                } else resBox.innerHTML = "<span style='color:var(--danger)'>查無此人。</span>";
+                    resBox.innerHTML = `<strong style="color:var(--pol-blue); font-size:1.2rem;">👤 綜合市民檔案</strong><br><br>
+                        <div class="grid-2" style="gap:10px; margin-bottom:15px;">
+                            <div><strong>身分證:</strong> ${data.citizenId}</div><div><strong>姓名:</strong> ${data.fullName}</div>
+                            <div><strong>生日:</strong> ${data.dob}</div><div><strong>性別:</strong> ${data.gender}</div>
+                            <div style="grid-column: span 2;"><strong>住址:</strong> ${data.address}</div>
+                        </div>
+                        <hr style="border-color:var(--border); margin:15px 0;">
+                        <strong style="display:block; margin-bottom:10px;">🚨 通緝狀態:</strong>${wHtml}
+                        <hr style="border-color:var(--border); margin:15px 0;">
+                        <strong style="display:block; margin-bottom:10px;">📋 名下資產/執照:</strong>${aHtml}`;
+                } else resBox.innerHTML = "<span style='color:var(--danger)'>查無此身分紀錄。</span>";
             } else {
                 const q = document.getElementById("ncic-query").value.trim().toUpperCase();
                 const snap = await getDocs(query(collection(db, "assets"), where("type", "==", type==='vehicle'?'車輛':'槍枝'), where("detail", "==", q)));
                 if(!snap.empty) {
                     const data = snap.docs[0].data();
-                    resBox.innerHTML = `<strong style="color:var(--pol-blue);">📝 資產紀錄</strong><br>
-                        <strong>類型:</strong> ${data.type}<br><strong>登記碼:</strong> ${data.detail}<br><strong>所有人:</strong> ${data.ownerName} (${data.citizenId})<br><span style='color:var(--civ-green)'>合法登記</span>`;
-                } else resBox.innerHTML = "<span style='color:var(--warning)'>查無登記，疑似黑市物品。</span>";
+                    resBox.innerHTML = `<strong style="color:var(--pol-blue); font-size:1.2rem;">📝 資產資料庫</strong><br><br>
+                        <strong>類型:</strong> ${data.type}<br><strong>登記碼:</strong> ${data.detail}<br><strong>所有人:</strong> ${data.ownerName} (${data.citizenId})<br><br><span class='badge' style='background:var(--civ-green)'>合法登記</span>`;
+                } else resBox.innerHTML = "<span style='color:var(--warning)'>查無登記，疑似非法物品。</span>";
             }
-            logAudit('police', `NCIC 查詢`);
-        } catch(e) { resBox.innerHTML = "錯誤。"; }
+            logAudit('police', `執行 NCIC 查詢`);
+        } catch(e) { resBox.innerHTML = "查詢發生錯誤。"; }
     };
 
     window.deleteWarrant = async (id) => {
@@ -555,13 +593,13 @@
     window.issueTicket = async () => {
         const cid = document.getElementById("ticket-id").value; const r = document.getElementById("ticket-law").value; const f = document.getElementById("ticket-fine").value;
         if(!cid || !r) return; await addDoc(collection(db, "tickets"), { citizenId: cid, reason: r, fine: Number(f), timestamp: serverTimestamp() });
-        alert("✅ 罰單入檔！"); logAudit('police', `開立罰單`);
+        alert("✅ 罰單入檔！"); document.getElementById("ticket-id").value = ""; logAudit('police', `開立罰單`);
     };
 
     window.issueWarrant = async () => {
         const cid = document.getElementById("warrant-id").value; const r = document.getElementById("warrant-reason").value;
         if(!cid || !r) return; await addDoc(collection(db, "warrants"), { citizenId: cid, reason: r, timestamp: serverTimestamp() });
-        alert("✅ 通緝令發布！"); logAudit('police', `發布通緝`);
+        alert("✅ 通緝令發布！"); document.getElementById("warrant-id").value = ""; document.getElementById("warrant-reason").value = ""; logAudit('police', `發布通緝`);
     };
 
     // ==========================================
@@ -570,13 +608,13 @@
     window.createCall = async () => {
         const p = document.getElementById("disp-priority").value; const t = document.getElementById("disp-title").value;
         const l = document.getElementById("disp-loc").value; const d = document.getElementById("disp-desc").value;
-        if(!t || !l) return;
+        if(!t || !l) return alert("標題與地點必填！");
         await addDoc(collection(db, "incidents"), { priority: p, title: t, location: l, desc: d, primaryUnit: null, assignedUnits: [], status: "Active", timestamp: serverTimestamp() });
         document.getElementById("disp-title").value = ""; document.getElementById("disp-loc").value = ""; document.getElementById("disp-desc").value = "";
         logAudit('dispatch', `建立案件`);
     };
 
-    window.setPrimaryUnit = async (incId, unitId) => { if(unitId) await updateDoc(doc(db, "incidents", incId), { primaryUnit: unitId }); };
+    window.setPrimaryUnit = async (incId, unitId) => { if(unitId) { await updateDoc(doc(db, "incidents", incId), { primaryUnit: unitId }); logAudit('dispatch', `設定案件主響應單位`); } };
     window.addAssistUnit = async (incId, unitId) => { if(unitId) await updateDoc(doc(db, "incidents", incId), { assignedUnits: arrayUnion(unitId) }); };
     window.unassignUnit = async (incId, unitId, isPrimary) => {
         if(isPrimary) await updateDoc(doc(db, "incidents", incId), { primaryUnit: null }); else await updateDoc(doc(db, "incidents", incId), { assignedUnits: arrayRemove(unitId) });
@@ -589,24 +627,32 @@
     window.saveEditedCall = async () => {
         const id = document.getElementById("edit-call-id").value;
         await updateDoc(doc(db, "incidents", id), { title: document.getElementById("edit-call-title").value, location: document.getElementById("edit-call-loc").value, desc: document.getElementById("edit-call-desc").value });
-        closeModal('edit-call-modal'); logAudit(currentDept, `編輯案件`);
+        closeModal('edit-call-modal'); logAudit(currentDept, `編輯案件資訊`);
     };
 
     window.endCall = async (incId) => {
-        if(confirm("確定結束此案件？將轉入歷史區。")) { await updateDoc(doc(db, "incidents", incId), { status: "Archived" }); logAudit(currentDept, `結束案件`); }
+        if(confirm("確定結束此案件並轉入歷史區？")) { await updateDoc(doc(db, "incidents", incId), { status: "Archived" }); logAudit(currentDept, `結束案件`); }
     };
 
     window.forceAllOffline = async () => {
         if(!confirm("確定強制所有單位下班？")) return;
         const snap = await getDocs(collection(db, "units"));
-        snap.forEach(d => { if(!d.data().status.includes('10-7')) updateDoc(d.ref, { status: "10-7 (調度強制下班)" }); });
-        logAudit('dispatch', `強制所有警員下線`);
+        snap.forEach(d => { if(!d.data().status.includes('10-7')) updateDoc(d.ref, { status: "10-7 (調度強制下線)" }); });
+        logAudit('dispatch', `強制全體警員下班`);
     };
 
     window.viewHistory = (title, loc, desc, time) => {
         document.getElementById("hist-title").innerText = title; document.getElementById("hist-loc").innerText = "📍 " + loc;
-        document.getElementById("hist-desc").innerText = desc; document.getElementById("hist-time").innerText = "建檔時間: " + time;
+        document.getElementById("hist-desc").innerText = desc || "無詳細描述。"; document.getElementById("hist-time").innerText = "建檔時間: " + time;
         openModal('history-modal');
+    };
+
+    // ==========================================
+    // 醫護 (EMS)
+    // ==========================================
+    window.saveMedReport = async () => {
+        const p = document.getElementById("med-patient").value;
+        if(p) { await addDoc(collection(db, "medical_reports"), { patient: p, desc: document.getElementById("med-desc").value, timestamp: serverTimestamp() }); alert("報告入檔"); document.getElementById("med-patient").value = ""; logAudit('ems', `寫入醫療報告`);}
     };
 
     // ==========================================
@@ -618,7 +664,7 @@
         if(!last || !first || !dob) return alert("資料不完整");
         const fullName = `${last} ${first}`; const citizenId = "CIT-" + Math.floor(1000 + Math.random() * 9000);
         await addDoc(collection(db, "citizens"), { userId: currentUser.uid, fullName, dob, gender, address, citizenId, timestamp: serverTimestamp() });
-        logAudit('citizen', `建立角色: ${fullName}`);
+        document.getElementById("civ-last").value = ""; document.getElementById("civ-first").value = ""; logAudit('citizen', `建立角色: ${fullName}`);
     };
 
     const loadMyCharacters = () => {
@@ -630,7 +676,7 @@
                             <strong style="color:white; font-size:1.1rem;">${char.fullName}</strong><span class="badge" style="background:var(--civ-green);">${char.citizenId}</span>
                          </div>`;
             });
-            document.getElementById("civ-char-list").innerHTML = html || "<span style='color:#888;'>無角色檔案。</span>";
+            document.getElementById("civ-char-list").innerHTML = html || "<span style='color:var(--text-muted);'>尚未建立角色檔案。</span>";
         });
     };
 
@@ -639,7 +685,6 @@
         document.querySelectorAll('.char-card').forEach(c => c.classList.remove('active')); document.getElementById(`char-${id}`).classList.add('active');
         document.getElementById("civ-action-panel").style.display = "block"; document.getElementById("civ-active-name").innerText = name; document.getElementById("civ-active-id").innerText = id;
 
-        // 載入罰單
         onSnapshot(query(collection(db, "tickets"), where("citizenId", "==", id)), (snap) => {
             let html = "";
             snap.forEach(d => {
@@ -648,42 +693,38 @@
                             <button class="btn-civ" style="margin:0; padding:6px 12px;" onclick="payTicket('${d.id}')">繳納</button>
                          </div>`;
             });
-            document.getElementById("civ-tickets-board").innerHTML = html || "無未繳罰單。";
+            document.getElementById("civ-tickets-board").innerHTML = html || "目前無欠款或前科。";
         });
 
-        // 載入資產
         onSnapshot(query(collection(db, "assets"), where("citizenId", "==", id)), (snap) => {
             let html = "";
             snap.forEach(d => {
                 html += `<div class="list-item" style="border-left-color:var(--civ-green); flex-direction:row; align-items:center;">
-                            <div style="flex:1;">[${d.data().type}] <strong>${d.data().detail}</strong></div>
-                            <button class="btn-danger" style="margin:0; padding:6px 12px;" onclick="deleteAsset('${d.id}')">刪除/註銷</button>
+                            <div style="flex:1;"><span style="color:var(--text-muted);">[${d.data().type}]</span> <strong style="color:white;">${d.data().detail}</strong></div>
+                            <button class="btn-danger" style="margin:0; padding:6px 12px;" onclick="deleteAsset('${d.id}')">註銷</button>
                          </div>`;
             });
-            document.getElementById("civ-assets-board").innerHTML = html || "名下無登記資產。";
+            document.getElementById("civ-assets-board").innerHTML = html || "名下無登記資產/執照。";
         });
     };
 
     window.toggleCivAssetInput = () => {
         const type = document.getElementById("civ-asset-type").value;
         if(type === '駕駛執照' || type === '槍械執照') {
-            document.getElementById("civ-asset-detail").value = type;
-            document.getElementById("civ-asset-detail").disabled = true;
+            document.getElementById("civ-asset-detail").value = type; document.getElementById("civ-asset-detail").disabled = true;
         } else {
-            document.getElementById("civ-asset-detail").value = "";
-            document.getElementById("civ-asset-detail").disabled = false;
+            document.getElementById("civ-asset-detail").value = ""; document.getElementById("civ-asset-detail").disabled = false;
         }
     };
 
     window.registerAsset = async () => {
-        const type = document.getElementById("civ-asset-type").value;
-        const detail = document.getElementById("civ-asset-detail").value.toUpperCase();
+        const type = document.getElementById("civ-asset-type").value; const detail = document.getElementById("civ-asset-detail").value.toUpperCase();
         if(!detail) return;
         await addDoc(collection(db, "assets"), { citizenId: activeCitizenId, ownerName: activeCitizenName, type, detail });
         alert("登記完成"); document.getElementById("civ-asset-detail").value = ""; toggleCivAssetInput(); logAudit('citizen', `登記資產: ${type}`);
     };
 
-    window.deleteAsset = async (id) => { if(confirm("確定要刪除/註銷此資料嗎？")) { await deleteDoc(doc(db, "assets", id)); logAudit('citizen', '刪除資產'); }};
+    window.deleteAsset = async (id) => { if(confirm("確定要註銷此資料嗎？")) { await deleteDoc(doc(db, "assets", id)); logAudit('citizen', '註銷資產'); }};
     window.payTicket = async (id) => { await deleteDoc(doc(db, "tickets", id)); alert("繳納成功"); logAudit('citizen', `繳納罰單`); };
 
     window.send911 = async () => {
@@ -694,7 +735,7 @@
     };
 
     // ==========================================
-    // ⚙️ 管理員 & 戶政管理
+    // ⚙️ 管理員 & 後台功能
     // ==========================================
     window.addLaw = async () => {
         const n = document.getElementById("adm-law-name").value; const f = document.getElementById("adm-law-fine").value;
@@ -703,16 +744,30 @@
     window.deleteLaw = async (id) => { if(confirm("確定刪除此法條？")) { await deleteDoc(doc(db, "penal_codes", id)); }};
 
     window.backupData = async () => {
-        const snap = await getDocs(collection(db, "incidents"));
-        const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const snap = await getDocs(collection(db, "incidents")); const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob); const a = document.createElement('a');
-        a.href = url; a.download = `CAD_Backup.json`; a.click(); logAudit('admin', '匯出備份');
+        const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `CAD_Backup.json`; a.click(); logAudit('admin', '匯出備份');
     };
     window.clearAllHistory = async () => {
         if(!confirm("確定刪除所有「歷史案件」嗎？不可復原！")) return;
         const snap = await getDocs(query(collection(db, "incidents"), where("status", "==", "Archived")));
         snap.forEach(d => deleteDoc(d.ref)); alert("歷史案件已清除。"); logAudit('admin', '清空歷史案件');
+    };
+
+    // 防呆：確保 name 和 cid 是字串才能搜尋
+    window.filterAdminCitizens = () => {
+        const q = document.getElementById("adm-civ-search").value.toLowerCase();
+        let html = "";
+        allCitizensData.filter(c => (c.name || '').toLowerCase().includes(q) || (c.cid || '').toLowerCase().includes(q)).forEach(c => {
+            html += `<div class="list-item" style="flex-direction:row; align-items:center;">
+                        <div style="flex:1;"><strong style="font-size:1.1rem; color:white;">${c.name}</strong> <span class="badge" style="background:var(--civ-green);">${c.cid}</span></div>
+                        <div class="flex">
+                            <button class="btn-dark" style="padding:6px 12px; margin:0;" onclick="openEditCitizen('${c.docId}','${c.name}','${c.dob}','${c.gender}','${c.addr}')">📝 編輯</button>
+                            <button class="btn-danger" style="padding:6px 12px; margin:0;" onclick="deleteCitizen('${c.docId}')">🗑️ 刪除</button>
+                        </div>
+                     </div>`;
+        });
+        document.getElementById("adm-citizens-board").innerHTML = html || "<div style='color:var(--text-muted); padding:10px;'>查無市民結果。</div>";
     };
 
     window.openEditCitizen = (id, name, dob, gender, address) => {
@@ -726,35 +781,22 @@
             fullName: document.getElementById("adm-civ-name").value, dob: document.getElementById("adm-civ-dob").value,
             gender: document.getElementById("adm-civ-gender").value, address: document.getElementById("adm-civ-addr").value
         });
-        closeModal('edit-citizen-modal'); logAudit('admin', `強制編輯市民資料`);
+        closeModal('edit-citizen-modal'); logAudit('admin', `強制修改市民資料`);
     };
     window.deleteCitizen = async (id) => {
         if(confirm("警告：即將永久刪除此市民檔案，確定？")) { await deleteDoc(doc(db, "citizens", id)); logAudit('admin', `刪除市民檔案`); }
-    };
-
-    window.filterAdminCitizens = () => {
-        const q = document.getElementById("adm-civ-search").value.toLowerCase();
-        let html = "";
-        allCitizensData.filter(c => c.name.toLowerCase().includes(q) || c.cid.toLowerCase().includes(q)).forEach(c => {
-            html += `<div class="list-item" style="flex-direction:row; align-items:center;">
-                        <div style="flex:1;"><strong>${c.name}</strong> <span class="badge" style="background:#444;">${c.cid}</span></div>
-                        <button class="btn-dark" style="padding:4px 8px; margin:0 5px;" onclick="openEditCitizen('${c.docId}','${c.name}','${c.dob}','${c.gender}','${c.addr}')">編輯</button>
-                        <button class="btn-danger" style="padding:4px 8px; margin:0;" onclick="deleteCitizen('${c.docId}')">刪除</button>
-                     </div>`;
-        });
-        document.getElementById("adm-citizens-board").innerHTML = html || "<div style='color:#888;'>查無結果。</div>";
     };
 
     window.filterLogs = (cat) => {
         let html = "";
         auditLogsData.filter(log => cat === 'all' || log.category === cat).forEach(log => {
             let badge = '';
-            if(log.category==='police') badge = '<span class="badge badge-primary">警察</span>';
-            if(log.category==='ems') badge = '<span class="badge badge-danger">醫護</span>';
-            if(log.category==='citizen') badge = '<span class="badge" style="background:var(--civ-green)">市民</span>';
-            if(log.category==='dispatch') badge = '<span class="badge" style="background:var(--disp-purple)">調度</span>';
-            if(log.category==='admin') badge = '<span class="badge" style="background:var(--warning); color:black;">管理</span>';
-            html += `<tr><td>${log.time}</td><td>${badge}</td><td>${log.user}</td><td>${log.action}</td></tr>`;
+            if(log.category==='police') badge = '<span class="badge" style="background:var(--pol-blue)">🚓 警察</span>';
+            if(log.category==='ems') badge = '<span class="badge" style="background:var(--ems-red)">🚑 醫護</span>';
+            if(log.category==='citizen') badge = '<span class="badge" style="background:var(--civ-green)">👤 市民</span>';
+            if(log.category==='dispatch') badge = '<span class="badge" style="background:var(--disp-purple)">📡 調度</span>';
+            if(log.category==='admin') badge = '<span class="badge" style="background:var(--warning); color:black;">⚙️ 管理</span>';
+            html += `<tr><td style="color:var(--text-muted); font-family:monospace;">${log.time}</td><td>${badge}</td><td style="font-weight:600; color:white;">${log.user}</td><td style="color:var(--text-muted);">${log.action}</td></tr>`;
         });
         document.getElementById("audit-table-body").innerHTML = html;
     };
@@ -766,9 +808,9 @@
         penalCodes = []; let opt = "<option value=''>-- 選擇法條 --</option>"; let admList = "";
         snap.forEach(d => { 
             penalCodes.push(d.data()); opt += `<option value="${d.data().name}">${d.data().name}</option>`;
-            admList += `<div class="list-item" style="flex-direction:row; justify-content:space-between; align-items:center; padding:10px;">
-                            <div><strong>${d.data().name}</strong> <span class="badge" style="background:var(--warning); color:black;">$${d.data().fine}</span></div>
-                            <button class="btn-danger" style="padding:4px 8px; margin:0;" onclick="deleteLaw('${d.id}')">刪除</button>
+            admList += `<div class="list-item" style="flex-direction:row; justify-content:space-between; align-items:center; padding:12px;">
+                            <div><strong style="color:white;">${d.data().name}</strong> <span class="badge" style="background:var(--warning); color:black;">$${d.data().fine}</span></div>
+                            <button class="btn-danger" style="padding:6px 12px; margin:0;" onclick="deleteLaw('${d.id}')">刪除</button>
                         </div>`;
         });
         if(document.getElementById("ticket-law")) document.getElementById("ticket-law").innerHTML = opt;
@@ -777,7 +819,11 @@
 
     onSnapshot(collection(db, "citizens"), (snap) => {
         allCitizensData = [];
-        snap.forEach(d => { let c = d.data(); allCitizensData.push({ docId: d.id, name: c.fullName, cid: c.citizenId, dob: c.dob, gender: c.gender, addr: c.address }); });
+        snap.forEach(d => { 
+            let c = d.data(); 
+            // 防呆：確保即使舊資料沒有 fullName 也能正常讀取，不報錯
+            allCitizensData.push({ docId: d.id, name: c.fullName || c.name || "未知市民", cid: c.citizenId || "未知", dob: c.dob || "", gender: c.gender || "", addr: c.address || "" }); 
+        });
         if(document.getElementById("adm-citizens-board")) filterAdminCitizens();
     });
 
@@ -789,12 +835,12 @@
                 onlineUnits.push({id: d.id, ...u});
                 let bColor = u.dept === 'LSFD' ? 'var(--ems-red)' : 'var(--pol-blue)';
                 html += `<div class="list-item" style="border-left-color:${bColor};">
-                            <div class="flex"><span class="badge" style="background:${bColor};">${u.dept}</span><strong style="color:white;">${u.name}</strong></div>
-                            <span style="font-size:0.85rem; color:var(--text-muted);">${u.status}</span>
+                            <div class="flex"><span class="badge" style="background:${bColor};">${u.dept}</span><strong style="color:white; font-size:1.05rem;">${u.name}</strong></div>
+                            <span style="font-size:0.9rem; color:var(--text-muted); margin-top:4px;">目前狀態: <span style="color:white;">${u.status}</span></span>
                          </div>`;
             }
         });
-        if(document.getElementById("disp-units-board")) document.getElementById("disp-units-board").innerHTML = html || "<div style='color:var(--text-muted);'>無線上單位。</div>";
+        if(document.getElementById("disp-units-board")) document.getElementById("disp-units-board").innerHTML = html || "<div style='color:var(--text-muted); padding:10px;'>目前無線上單位。</div>";
     });
 
     onSnapshot(query(collection(db, "incidents"), orderBy("timestamp", "desc")), (snap) => {
@@ -804,21 +850,21 @@
             let inc = d.data(); let id = d.id; let assigned = inc.assignedUnits || []; let primary = inc.primaryUnit || null;
             let timeStr = inc.timestamp ? inc.timestamp.toDate().toLocaleString() : "";
             
-            let selHtml = `<select id="sel-${id}" style="width:120px; padding:6px; margin:0;"><option value="">選單位</option>`;
+            let selHtml = `<select id="sel-${id}" style="width:130px; padding:8px; margin:0;"><option value="">選擇派遣單位</option>`;
             onlineUnits.forEach(u => { if(u.id !== primary && !assigned.includes(u.id)) selHtml += `<option value="${u.id}">${u.name}</option>`; });
-            selHtml += `</select><button class="btn-dark" style="padding:6px; margin:0 2px;" onclick="setPrimaryUnit('${id}', document.getElementById('sel-${id}').value)">主響應</button><button class="btn-pol" style="padding:6px; margin:0;" onclick="addAssistUnit('${id}', document.getElementById('sel-${id}').value)">加入支援</button>`;
+            selHtml += `</select><button class="btn-warning" style="padding:8px 12px; margin:0 5px;" onclick="setPrimaryUnit('${id}', document.getElementById('sel-${id}').value)">設為主響應</button><button class="btn-pol" style="padding:8px 12px; margin:0;" onclick="addAssistUnit('${id}', document.getElementById('sel-${id}').value)">加入支援</button>`;
             
-            let pTag = primary ? `<span class="badge" style="background:var(--warning); color:black; margin-bottom:5px; display:inline-block;">👑 主響應: ${onlineUnits.find(u=>u.id===primary)?.name||'未知'} <span style="cursor:pointer; color:red;" onclick="unassignUnit('${id}','${primary}', true)">✖</span></span>` : '';
-            let aTags = assigned.map(uid => `<span class="badge" style="background:var(--pol-blue); margin-bottom:5px; display:inline-block;">支援: ${onlineUnits.find(u=>u.id===uid)?.name||'未知'} <span style="cursor:pointer; color:var(--danger);" onclick="unassignUnit('${id}','${uid}', false)">✖</span></span>`).join(" ");
+            let pTag = primary ? `<span class="badge" style="background:var(--warning); color:black; margin-bottom:5px; display:inline-block; font-size:0.85rem;">👑 主響應: ${onlineUnits.find(u=>u.id===primary)?.name||'未知'} <span style="cursor:pointer; color:red; margin-left:4px;" onclick="unassignUnit('${id}','${primary}', true)">✖</span></span>` : '';
+            let aTags = assigned.map(uid => `<span class="badge" style="background:var(--pol-blue); margin-bottom:5px; display:inline-block; font-size:0.85rem;">支援: ${onlineUnits.find(u=>u.id===uid)?.name||'未知'} <span style="cursor:pointer; color:white; margin-left:4px;" onclick="unassignUnit('${id}','${uid}', false)">✖</span></span>`).join(" ");
             let pClass = inc.priority === "1" ? "var(--danger)" : (inc.priority === "2" ? "var(--warning)" : "var(--pol-blue)");
 
             let cardHtml = `<div class="list-item" style="flex-direction:column; align-items:flex-start; border-left-color:${inc.status==='Active'?pClass:'gray'}; ${inc.status!=='Active'?'cursor:pointer;':''}" ${inc.status!=='Active'?`onclick="viewHistory('${inc.title}', '${inc.location}', '${inc.desc}', '${timeStr}')"`:''}>
-                                <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:5px;">
-                                    <strong style="color:white;">${inc.status==='Active'?`[P${inc.priority}] `:'[已結案] '}${inc.title}</strong>
-                                    <div>${inc.status === 'Active' ? `<button class="btn-dark" style="padding:4px 8px; margin:0;" onclick="openEditCallModal('${id}','${inc.title}','${inc.location}','${inc.desc}')">📝 編輯</button><button class="btn-danger" style="padding:4px 8px; margin:0 0 0 5px;" onclick="endCall('${id}')">✅ 結束案件</button>` : `<span class="badge">封存</span>`}</div>
+                                <div style="width:100%; display:flex; justify-content:space-between; margin-bottom:5px; align-items:center;">
+                                    <strong style="color:white; font-size:1.1rem;">${inc.status==='Active'?`[P${inc.priority}] `:'[已結案] '}${inc.title}</strong>
+                                    <div>${inc.status === 'Active' ? `<button class="btn-dark" style="padding:6px 12px; margin:0;" onclick="openEditCallModal('${id}','${inc.title}','${inc.location}','${inc.desc}')">📝 編輯</button><button class="btn-danger" style="padding:6px 12px; margin:0 0 0 8px;" onclick="endCall('${id}')">✅ 結束</button>` : `<span class="badge" style="background:#3f3f46;">已封存歸檔</span>`}</div>
                                 </div>
-                                <div style="font-size:0.9rem; color:var(--text-muted); margin-bottom:10px;">📍 ${inc.location} ${inc.status==='Active'?`| 📝 ${inc.desc}`:''}</div>
-                                ${inc.status === 'Active' ? `<div style="margin-bottom:10px;">${pTag} ${aTags}</div><div class="flex">${selHtml}</div>` : ''}
+                                <div style="font-size:0.95rem; color:var(--text-muted); margin-bottom:12px;">📍 ${inc.location} ${inc.status==='Active'?`<br><br>📝 ${inc.desc}`:''}</div>
+                                ${inc.status === 'Active' ? `<div style="margin-bottom:12px;">${pTag} ${aTags}</div><div class="flex">${selHtml}</div>` : ''}
                             </div>`;
 
             if(inc.status === 'Active') dispActive += cardHtml; else dispArchived += cardHtml;
@@ -826,21 +872,21 @@
             if(inc.status === 'Active' && ((myUnitId && myUnitId === primary) || (myUnitId && assigned.includes(myUnitId)))) {
                 let myHtml = `<div class="list-item" style="flex-direction:column; align-items:flex-start; border-left-color:${pClass};">
                                 <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
-                                    <strong style="color:white; font-size:1.1rem;">🚨 ${inc.title}</strong>
-                                    <div><button class="btn-dark" style="padding:6px 12px; margin:0 5px 0 0;" onclick="openEditCallModal('${id}','${inc.title}','${inc.location}','${inc.desc}')">📝 編輯</button><button class="btn-danger" style="padding:6px 12px; margin:0;" onclick="endCall('${id}')">✅ 結案</button></div>
+                                    <strong style="color:white; font-size:1.2rem;">🚨 ${inc.title}</strong>
+                                    <div><button class="btn-dark" style="padding:8px 15px; margin:0 8px 0 0;" onclick="openEditCallModal('${id}','${inc.title}','${inc.location}','${inc.desc}')">📝 編輯</button><button class="btn-danger" style="padding:8px 15px; margin:0;" onclick="endCall('${id}')">✅ 回報結案</button></div>
                                 </div>
-                                <div style="margin:8px 0; color:white;">📍 ${inc.location}</div><div style="color:var(--text-muted); font-size:0.95rem; line-height:1.5;">📝 ${inc.desc}</div>
-                                <div style="margin-top:10px; padding-top:10px; border-top:1px solid var(--border); width:100%;">現場單位：${pTag} ${aTags}</div>
+                                <div style="margin:12px 0; color:white; font-size:1.05rem;">📍 發生地點: ${inc.location}</div><div style="color:var(--text-muted); font-size:0.95rem; line-height:1.6; background:rgba(0,0,0,0.2); padding:10px; border-radius:6px; width:100%; box-sizing:border-box;">📝 ${inc.desc}</div>
+                                <div style="margin-top:15px; padding-top:12px; border-top:1px solid var(--border); width:100%;">現場響應單位：<br><div style="margin-top:8px;">${pTag} ${aTags}</div></div>
                                </div>`;
                 if(currentDept === 'police') polCallHtml += myHtml;
                 if(currentDept === 'ems') emsCallHtml += myHtml;
             }
         });
         
-        if(document.getElementById("disp-calls-board")) document.getElementById("disp-calls-board").innerHTML = dispActive || "<div style='color:#888'>目前無案件。</div>";
-        if(document.getElementById("disp-history-board")) document.getElementById("disp-history-board").innerHTML = dispArchived || "<div style='color:#888'>無歷史案件。</div>";
-        if(document.getElementById("pol-my-call")) document.getElementById("pol-my-call").innerHTML = polCallHtml || "<div style='color:#888'>無分派勤務。</div>";
-        if(document.getElementById("ems-my-call")) document.getElementById("ems-my-call").innerHTML = emsCallHtml || "<div style='color:#888'>無分派勤務。</div>";
+        if(document.getElementById("disp-calls-board")) document.getElementById("disp-calls-board").innerHTML = dispActive || "<div style='color:var(--text-muted); padding:10px;'>目前無進行中案件。</div>";
+        if(document.getElementById("disp-history-board")) document.getElementById("disp-history-board").innerHTML = dispArchived || "<div style='color:var(--text-muted); padding:10px;'>無歷史案件。</div>";
+        if(document.getElementById("pol-my-call")) document.getElementById("pol-my-call").innerHTML = polCallHtml || "<div style='color:var(--text-muted); padding:10px;'>目前無分派勤務。</div>";
+        if(document.getElementById("ems-my-call")) document.getElementById("ems-my-call").innerHTML = emsCallHtml || "<div style='color:var(--text-muted); padding:10px;'>目前無分派勤務。</div>";
     });
 
     onSnapshot(query(collection(db, "audit_logs"), orderBy("timestamp", "desc")), (snap) => {
